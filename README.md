@@ -2,7 +2,7 @@
 
 **Course**: COMP303  
 **Assignment**: Microservices Development  
-**Due Date**: Week 13  
+**Due Date**: Week 13
 
 ## Purpose
 
