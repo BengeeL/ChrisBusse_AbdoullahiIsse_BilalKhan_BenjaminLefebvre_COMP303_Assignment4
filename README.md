@@ -129,5 +129,5 @@ For additional guidance, refer to the following resources:
 List group members here:
 - **Name 1** (Student Number)
 - **Name 2** (Student Number)
-- **Name 3** (Student Number)
+- **Abdoullahi Isse** (301250600)
 - **Benjamin Lefebvre** (301234587)
