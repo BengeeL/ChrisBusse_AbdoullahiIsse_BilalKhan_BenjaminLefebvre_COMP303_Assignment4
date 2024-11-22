@@ -1,0 +1,84 @@
+package bloodbank.bloodbankservice.core.entities;
+
+import bloodbank.bloodbankservice.core.entities.enums.GenderType;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+import lombok.*;
+import org.hibernate.validator.constraints.Range;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.io.Serial;
+import java.io.Serializable;
+import java.sql.Timestamp;
+import java.util.Date;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
+@Builder
+@Entity
+@Table(name = "bb_donor")
+public class Donor implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "firstname")
+    @NotBlank(message = "Provided firstname is a required field and should not be blank.")
+    @Size(min = 2, max = 50, message = "Firstname should be between 2 and 50 characters.")
+    private @NotNull String firstName;
+
+    @Column(name = "lastname")
+    @NotBlank(message = "Provide lastname is a required field and should not be blank.")
+    @Size(min = 2, max = 50, message = "Lastname should be between 2 and 50 characters.")
+    private @NotNull String lastName;
+
+    @Column(name = "age")
+    @Range(min = 1, max = 99, message = "Age should be within the range of 1 - 99")
+    private Integer age;
+
+    @Column(name = "dob")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @NotNull(message = "Best Before Date is a required field and should not be null.")
+    @Pattern(
+            regexp = "\\d{1,2}\\/\\d{1,2}\\/\\d{2,4}",
+            message = "Date of Birth does not conform with the regex provided.")
+    private Date dateOfBirth;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "gender")
+    @NotNull (message = "Gender is a required field and should not be null.")
+    private GenderType Gender;
+
+    @Column(name = "city")
+    @NotBlank(message = "Provided city is a required field and should not be blank.")
+    private @NotNull String city;
+
+    @Column(name = "phone_number")
+    @NotBlank(message = "Provided phone number is a required field and should not be blank.")
+    @Pattern(
+            regexp = "^(\\+\\d{1,2}\\s?)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$",
+            message = "Phone number does not conform with the regex provided."
+    )
+    private @NotNull String phoneNumber;
+
+    //region Timestamps
+    @Column(name="created_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @CreatedDate
+    private Timestamp CreatedAt;
+
+    @Column(name="modified_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @LastModifiedDate
+    private Timestamp ModifiedAt;
+    //endregion
+}
