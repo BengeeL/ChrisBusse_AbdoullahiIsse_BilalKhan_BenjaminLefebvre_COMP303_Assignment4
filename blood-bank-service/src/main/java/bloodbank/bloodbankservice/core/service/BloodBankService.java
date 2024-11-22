@@ -46,7 +46,7 @@ public class BloodBankService {
         return findBloodBankOrThrowException(id);
     }
 
-    public BloodBank getBloodBankByName(final String name) throws EntityNotFoundException {
+    public BloodBank getBloodBankByName(final String name) {
         return bloodBankRepository
                 .findBloodBankByBloodBankName(name);
     }
