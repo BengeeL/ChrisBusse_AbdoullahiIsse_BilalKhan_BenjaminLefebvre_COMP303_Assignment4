@@ -127,7 +127,7 @@ For additional guidance, refer to the following resources:
 
 ### Contributors
 List group members here:
-- **Chris Busse** (Student Number)
+- **Chris Busse** (301252282)
 - **Bilal Khan** (301326791)
 - **Abdoullahi Isse** (301250600)
 - **Benjamin Lefebvre** (301234587)
