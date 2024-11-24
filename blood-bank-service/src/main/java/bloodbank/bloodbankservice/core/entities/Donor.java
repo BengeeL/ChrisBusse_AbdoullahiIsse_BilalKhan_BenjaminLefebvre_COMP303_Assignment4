@@ -58,7 +58,7 @@ public class Donor implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(name = "gender", nullable = false)
     @NotNull (message = "Gender is a required field and should not be null.")
-    private GenderType Gender;
+    private GenderType gender;
 
     @Column(name = "city", nullable = false)
     @NotBlank(message = "Provided city is a required field and should not be blank.")

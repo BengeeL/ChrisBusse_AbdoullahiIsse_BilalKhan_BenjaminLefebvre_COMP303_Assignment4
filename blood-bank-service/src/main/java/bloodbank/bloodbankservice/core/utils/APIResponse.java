@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 
-import java.sql.Timestamp;
+import java.time.Instant;
 
 @Data
 @AllArgsConstructor
@@ -23,6 +23,6 @@ public class APIResponse<T> {
     private String errorTrace;
 
     //region Timestamp
-    private Timestamp timestamp;
+    private Instant timestamp;
     //endregion
 }

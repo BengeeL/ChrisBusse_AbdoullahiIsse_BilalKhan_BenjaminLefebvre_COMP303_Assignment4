@@ -10,8 +10,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
+
+// TODO: Test this controller and refactor to clean up rough code.
 
 /**
  * Controller class for managing BloodBank entities.
@@ -57,7 +59,7 @@ public class BloodBankController {
                             .status(HttpStatus.OK)
                             .payload(null)
                             .errorTrace(String.format("Blood Bank with name %s not found", bloodBankName)) // @note: Is this necessary?
-                            .timestamp(new Timestamp(System.currentTimeMillis()))
+                            .timestamp(Instant.now())
                             .build());
         } else {
             return ResponseEntity
@@ -66,7 +68,7 @@ public class BloodBankController {
                             .message("Blood Bank retrieved successfully.")
                             .status(HttpStatus.OK)
                             .payload(bloodBankEntity)
-                            .timestamp(new Timestamp(System.currentTimeMillis()))
+                            .timestamp(Instant.now())
                             .build());
         }
     }
@@ -82,7 +84,7 @@ public class BloodBankController {
                             .message("No Blood Banks found.")
                             .status(HttpStatus.NO_CONTENT)
                             .payload(bloodBankEntities)
-                            .timestamp(new Timestamp(System.currentTimeMillis()))
+                            .timestamp(Instant.now())
                             .build());
         } else {
             return ResponseEntity
@@ -91,7 +93,7 @@ public class BloodBankController {
                             .message("Blood Banks retrieved successfully.")
                             .status(HttpStatus.OK)
                             .payload(bloodBankEntities)
-                            .timestamp(new Timestamp(System.currentTimeMillis()))
+                            .timestamp(Instant.now())
                             .build());
         }
     }
@@ -123,7 +125,7 @@ public class BloodBankController {
                             .message("Blood Bank has been added successfully.")
                             .status(HttpStatus.CREATED)
                             .payload(bloodBank)
-                            .timestamp(new Timestamp(System.currentTimeMillis()))
+                            .timestamp(Instant.now())
                             .build());
         } catch (EntityExistsException e) {
             return ResponseEntity
@@ -132,7 +134,7 @@ public class BloodBankController {
                             .message("Blood Bank already exists.")
                             .status(HttpStatus.BAD_REQUEST)
                             .errorTrace(e.getMessage())
-                            .timestamp(new Timestamp(System.currentTimeMillis()))
+                            .timestamp(Instant.now())
                             .build());
         } catch (Exception e) {
             return ResponseEntity
@@ -141,7 +143,7 @@ public class BloodBankController {
                             .message("Failed to add Blood Bank.")
                             .status(HttpStatus.BAD_REQUEST)
                             .errorTrace(e.getMessage())
-                            .timestamp(new Timestamp(System.currentTimeMillis()))
+                            .timestamp(Instant.now())
                             .build());
         }
     }
@@ -158,7 +160,7 @@ public class BloodBankController {
                                 .message("Blood Bank deleted successfully.")
                                 .status(HttpStatus.OK)
                                 .payload(true)
-                                .timestamp(new Timestamp(System.currentTimeMillis()))
+                                .timestamp(Instant.now())
                                 .build());
             } else {
                 return ResponseEntity
@@ -170,7 +172,7 @@ public class BloodBankController {
                                                 id))
                                 .status(HttpStatus.OK)
                                 .payload(false)
-                                .timestamp(new Timestamp(System.currentTimeMillis()))
+                                .timestamp(Instant.now())
                                 .build());
             }
 
@@ -181,7 +183,7 @@ public class BloodBankController {
                             .message("Failed to delete Blood Bank.")
                             .status(HttpStatus.BAD_REQUEST)
                             .errorTrace(e.getMessage())
-                            .timestamp(new Timestamp(System.currentTimeMillis()))
+                            .timestamp(Instant.now())
                             .build());
         }
     }
@@ -199,7 +201,7 @@ public class BloodBankController {
                         .message(String.format("Blood Bank with id %s updated successfully.", id))
                         .status(HttpStatus.OK)
                         .payload(true)
-                        .timestamp(new Timestamp(System.currentTimeMillis()))
+                        .timestamp(Instant.now())
                         .build());
     }
 
@@ -215,7 +217,7 @@ public class BloodBankController {
                                     .message(String.format("Blood Bank with id %s not found", id))
                                     .status(HttpStatus.NOT_FOUND)
                                     .payload(null)
-                                    .timestamp(new Timestamp(System.currentTimeMillis()))
+                                    .timestamp(Instant.now())
                                     .build());
         } else {
             return ResponseEntity
@@ -224,7 +226,7 @@ public class BloodBankController {
                             .message("Blood Bank retrieved successfully.")
                             .status(HttpStatus.OK)
                             .payload(bloodBankEntity)
-                            .timestamp(new Timestamp(System.currentTimeMillis()))
+                            .timestamp(Instant.now())
                             .build());
         }
     }

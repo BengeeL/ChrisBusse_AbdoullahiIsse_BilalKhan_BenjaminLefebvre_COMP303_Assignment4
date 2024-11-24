@@ -11,9 +11,21 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
-import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 
+// TODO: Test this controller and refactor to clean up rough code.
+
+/**
+ * Controller class for managing BloodBank entities.
+ * @author Muhammad Bilal Khan
+ * @version 1.0.0
+ * @since 1.0.0
+ * @see bloodbank.bloodbankservice.core.entities.BloodStock
+ * @see bloodbank.bloodbankservice.core.service.BloodStockService
+ * @see bloodbank.bloodbankservice.core.utils.APIResponse
+ * @see bloodbank.bloodbankservice.core.utils.APIResponseHandler
+ */
 @RequestMapping("api/v1/")
 @Controller
 public class BloodStockController {
@@ -47,7 +59,7 @@ public class BloodStockController {
                             .message("No Blood Stocks found.")
                             .status(HttpStatus.NOT_FOUND)
                             .payload(bloodStockEntities)
-                            .timestamp(new Timestamp(System.currentTimeMillis()))
+                            .timestamp(Instant.now())
                             .build());
         } else {
             return ResponseEntity
@@ -56,7 +68,7 @@ public class BloodStockController {
                             .message("Blood Stocks retrieved successfully.")
                             .status(HttpStatus.OK)
                             .payload(bloodStockEntities)
-                            .timestamp(new Timestamp(System.currentTimeMillis()))
+                            .timestamp(Instant.now())
                             .build());
         }
     }
@@ -84,7 +96,7 @@ public class BloodStockController {
                             .message("Blood Stock has been added successfully.")
                             .status(HttpStatus.CREATED)
                             .payload(bloodStock)
-                            .timestamp(new Timestamp(System.currentTimeMillis()))
+                            .timestamp(Instant.now())
                             .build());
         } catch (Exception e) {
             return ResponseEntity
@@ -93,7 +105,7 @@ public class BloodStockController {
                             .message("Failed to add Blood Stock.")
                             .status(HttpStatus.BAD_REQUEST)
                             .errorTrace(e.getMessage())
-                            .timestamp(new Timestamp(System.currentTimeMillis()))
+                            .timestamp(Instant.now())
                             .build());
         }
     }
@@ -110,7 +122,7 @@ public class BloodStockController {
                                 .message("Blood Stock deleted successfully.")
                                 .status(HttpStatus.OK)
                                 .payload(true)
-                                .timestamp(new Timestamp(System.currentTimeMillis()))
+                                .timestamp(Instant.now())
                                 .build());
             } else {
                 return ResponseEntity
@@ -122,7 +134,7 @@ public class BloodStockController {
                                                 id))
                                 .status(HttpStatus.OK)
                                 .payload(false)
-                                .timestamp(new Timestamp(System.currentTimeMillis()))
+                                .timestamp(Instant.now())
                                 .build());
             }
         } catch (Exception e) {
@@ -132,7 +144,7 @@ public class BloodStockController {
                             .message("Failed to delete Blood Stock.")
                             .status(HttpStatus.BAD_REQUEST)
                             .errorTrace(e.getMessage())
-                            .timestamp(new Timestamp(System.currentTimeMillis()))
+                            .timestamp(Instant.now())
                             .build());
         }
     }
@@ -149,7 +161,7 @@ public class BloodStockController {
                             .message("No Blood Stocks found.")
                             .status(HttpStatus.NOT_FOUND)
                             .payload(bloodStockEntities)
-                            .timestamp(new Timestamp(System.currentTimeMillis()))
+                            .timestamp(Instant.now())
                             .build());
         } else {
             return ResponseEntity
@@ -158,7 +170,7 @@ public class BloodStockController {
                             .message("Blood Stocks retrieved successfully.")
                             .status(HttpStatus.OK)
                             .payload(bloodStockEntities)
-                            .timestamp(new Timestamp(System.currentTimeMillis()))
+                            .timestamp(Instant.now())
                             .build());
         }
     }
@@ -176,7 +188,7 @@ public class BloodStockController {
                         .message(String.format("Blood Stock with id %s updated successfully.", id))
                         .status(HttpStatus.OK)
                         .payload(true)
-                        .timestamp(new Timestamp(System.currentTimeMillis()))
+                        .timestamp(Instant.now())
                         .build());
     }
 
@@ -193,7 +205,7 @@ public class BloodStockController {
                                 .message("Blood Stock deleted successfully.")
                                 .status(HttpStatus.OK)
                                 .payload(true)
-                                .timestamp(new Timestamp(System.currentTimeMillis()))
+                                .timestamp(Instant.now())
                                 .build());
             } else {
                 return ResponseEntity
@@ -205,7 +217,7 @@ public class BloodStockController {
                                                 id))
                                 .status(HttpStatus.OK)
                                 .payload(false)
-                                .timestamp(new Timestamp(System.currentTimeMillis()))
+                                .timestamp(Instant.now())
                                 .build());
             }
         } catch (Exception e) {
@@ -215,7 +227,7 @@ public class BloodStockController {
                             .message("Failed to delete Blood Stock.")
                             .status(HttpStatus.BAD_REQUEST)
                             .errorTrace(e.getMessage())
-                            .timestamp(new Timestamp(System.currentTimeMillis()))
+                            .timestamp(Instant.now())
                             .build());
         }
     }
@@ -231,7 +243,7 @@ public class BloodStockController {
                             .message(String.format("Blood Stock with id %s not found", id))
                             .status(HttpStatus.NOT_FOUND)
                             .payload(null)
-                            .timestamp(new Timestamp(System.currentTimeMillis()))
+                            .timestamp(Instant.now())
                             .build());
         } else {
             return ResponseEntity
@@ -240,7 +252,7 @@ public class BloodStockController {
                             .message("Blood Stock retrieved successfully.")
                             .status(HttpStatus.OK)
                             .payload(bloodStockEntity)
-                            .timestamp(new Timestamp(System.currentTimeMillis()))
+                            .timestamp(Instant.now())
                             .build());
         }
     }
