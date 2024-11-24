@@ -8,10 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -37,27 +34,53 @@ public class BloodBankController {
     }
 
     // @note: This is what it should be.
-    @RequestMapping("/get/{id}")
-    public ResponseEntity<APIResponse<BloodBank>> getBloodBankByIdPathVariable(@PathVariable(value = "id") long id) {
+    @GetMapping("/find/{id}")
+    public ResponseEntity<APIResponse<BloodBank>> findBloodBankByIdPathVariable(@PathVariable(value = "id") long id) {
         return wrappedBloodBankResponse(id);
     }
 
     // @note: This could be changed later on (or as an option if you want use RequestParam).
-    @RequestMapping("/get/id")
-    public ResponseEntity<APIResponse<BloodBank>> getBloodBankByIdRequestParam(@RequestParam(value = "id") long id) {
+    @GetMapping("/find/id")
+    public ResponseEntity<APIResponse<BloodBank>> findBloodBankByIdRequestParam(@RequestParam(value = "id") long id) {
         return wrappedBloodBankResponse(id);
     }
 
-    @RequestMapping("/get/all")
-    public ResponseEntity<APIResponse<List<BloodBank>>> getAllBloodBanks() {
-        var bloodBankEntities = bloodBankService.getAllBloodBanks();
+    @GetMapping("/find/{bloodBankName}")
+    public ResponseEntity<APIResponse<BloodBank>> findBloodBankByName(@PathVariable(value = "bloodBankName") String bloodBankName) {
+        var bloodBankEntity = bloodBankService.findBloodBankByBloodBankName(bloodBankName);
+
+        if (bloodBankEntity == null) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(APIResponse.<BloodBank>builder()
+                            .message("Blood Bank deleted successfully.")
+                            .status(HttpStatus.OK)
+                            .payload(null)
+                            .errorTrace(String.format("Blood Bank with name %s not found", bloodBankName)) // @note: Is this necessary?
+                            .timestamp(new Timestamp(System.currentTimeMillis()))
+                            .build());
+        } else {
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(APIResponse.<BloodBank>builder()
+                            .message("Blood Bank retrieved successfully.")
+                            .status(HttpStatus.OK)
+                            .payload(bloodBankEntity)
+                            .timestamp(new Timestamp(System.currentTimeMillis()))
+                            .build());
+        }
+    }
+
+    @GetMapping("/find/all")
+    public ResponseEntity<APIResponse<List<BloodBank>>> findAllBloodBanks() {
+        var bloodBankEntities = bloodBankService.findAllBloodBanks();
 
         if (bloodBankEntities.isEmpty()) {
             return ResponseEntity
-                    .status(HttpStatus.OK)
+                    .status(HttpStatus.NO_CONTENT)
                     .body(APIResponse.<List<BloodBank>>builder()
                             .message("No Blood Banks found.")
-                            .status(HttpStatus.OK)
+                            .status(HttpStatus.NO_CONTENT)
                             .payload(bloodBankEntities)
                             .timestamp(new Timestamp(System.currentTimeMillis()))
                             .build());
@@ -74,7 +97,7 @@ public class BloodBankController {
     }
 
 
-    @RequestMapping("/add")
+    @PostMapping("/add")
     public ResponseEntity<APIResponse<BloodBank>> addNewBloodBank(
             @RequestParam String BloodBankName,
             @RequestParam String Address,
@@ -123,9 +146,7 @@ public class BloodBankController {
         }
     }
 
-    @RequestMapping("/get/{")
-
-    @RequestMapping("/get/delete")
+    @DeleteMapping("/find/delete")
     public ResponseEntity<APIResponse<Boolean>> deleteBloodBank(@RequestParam long id) {
        try {
             var deleted = bloodBankService.deleteBloodBank(id);
@@ -134,11 +155,11 @@ public class BloodBankController {
                 return ResponseEntity
                         .status(HttpStatus.OK)
                         .body(APIResponse.<Boolean>builder()
-                        .message("Blood Bank deleted successfully.")
-                        .status(HttpStatus.OK)
-                        .payload(true)
-                        .timestamp(new Timestamp(System.currentTimeMillis()))
-                        .build());
+                                .message("Blood Bank deleted successfully.")
+                                .status(HttpStatus.OK)
+                                .payload(true)
+                                .timestamp(new Timestamp(System.currentTimeMillis()))
+                                .build());
             } else {
                 return ResponseEntity
                         .status(HttpStatus.OK)
@@ -165,7 +186,7 @@ public class BloodBankController {
         }
     }
 
-    @RequestMapping("/get/update")
+    @PutMapping("/find/update")
     public ResponseEntity<APIResponse<Boolean>> updateBloodBank(
             @RequestParam long id,
             @RequestBody BloodBank bloodBank
@@ -185,7 +206,7 @@ public class BloodBankController {
 
     //region Class Helpers
     private ResponseEntity<APIResponse<BloodBank>> wrappedBloodBankResponse(final Long id) {
-        var bloodBankEntity = bloodBankService.getBloodBankById(id);
+        var bloodBankEntity = bloodBankService.findBloodBankById(id);
 
         if (bloodBankEntity == null) {
             return ResponseEntity

@@ -32,16 +32,22 @@ public class BloodBankService {
         this.bloodBankRepository = bloodBankRepository;
     }
 
-    public List<BloodBank> getAllBloodBanks() {
+    public List<BloodBank> findAllBloodBanks() {
         return bloodBankRepository.findAll();
     }
 
-    public List<BloodBank> getBloodBanksByName(final String name) {
+    public BloodBank findBloodBankByBloodBankName(final String name) {
+        return bloodBankRepository
+                .findBloodBankByBloodBankName(name);
+    }
+
+    // @note: This method is not used yet.
+    public List<BloodBank> findBloodBanksByBloodBankName(final String name) {
         return bloodBankRepository
                 .findBloodBanksByBloodBankName(name);
     }
 
-    public BloodBank getBloodBankById(final Long id) throws EntityNotFoundException {
+    public BloodBank findBloodBankById(final Long id) throws EntityNotFoundException {
         // @note: throws EntityNotFoundException
         return findBloodBankOrThrowException(id);
     }
@@ -51,22 +57,24 @@ public class BloodBankService {
                 .findBloodBankByBloodBankName(name);
     }
 
-    public BloodBank saveBloodBank(final @Valid BloodBank bloodBank) {
-        return bloodBankRepository
-                .save(bloodBank);
+    public Boolean saveBloodBank(final @Valid BloodBank bloodBank) {
+        bloodBankRepository.save(bloodBank);
+        return true;
     }
 
-    public void saveBloodBanks(final List<@Valid BloodBank> bloodBanks) {
+    public Boolean saveBloodBanks(final List<@Valid BloodBank> bloodBanks) {
         bloodBankRepository
                 .saveAll(bloodBanks);
+        return true;
     }
 
-    public void updateBloodBank(final @Valid BloodBank bloodBank, final Long id) throws EntityNotFoundException  {
+    public Boolean updateBloodBank(final @Valid BloodBank bloodBank, final Long id) throws EntityNotFoundException  {
         // @note: throws EntityNotFoundException
         var bloodBankToUpdate = findBloodBankOrThrowException(id);
 
         updateBloodBankAttributes(bloodBankToUpdate, bloodBank);
         bloodBankRepository.save(bloodBankToUpdate);
+        return true;
     }
 
     public Boolean deleteBloodBank(final Long id) throws EntityNotFoundException {
