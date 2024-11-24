@@ -33,16 +33,16 @@ public class BloodStock implements Serializable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "blood_group")
+    @Column(name = "blood_group", nullable = false)
     @NotBlank(message = "Provided blood group is a required field and should not be blank.")
     @Size(min = 1, max = 100, message = "Blood Group provided must be between 1 and 100 characters.")
     private String bloodGroup;
 
-    @Column(name = "quantity")
+    @Column(name = "quantity", nullable = false)
     @Range(min = 1, max = 100, message = "Quantity provided must be between 1 and 100.")
     private Integer quantity;
 
-    @Column(name = "best_before")
+    @Column(name = "best_before", nullable = false)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @NotNull(message = "Best Before Date is a required field and should not be null.")
     @Pattern(
@@ -50,7 +50,7 @@ public class BloodStock implements Serializable{
             message = "Best Before data does not conform with the regex provided.")
     private Date bestBefore;
 
-    @Column(name = "status")
+    @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
     @NotNull(message = "Status is a required field and should not be null.")
     private StatusType status;

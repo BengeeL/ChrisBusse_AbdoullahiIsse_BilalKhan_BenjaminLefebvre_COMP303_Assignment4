@@ -33,21 +33,21 @@ public class Donor implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "firstname")
+    @Column(name = "firstname", nullable = false)
     @NotBlank(message = "Provided firstname is a required field and should not be blank.")
     @Size(min = 2, max = 50, message = "Firstname should be between 2 and 50 characters.")
     private @NotNull String firstName;
 
-    @Column(name = "lastname")
+    @Column(name = "lastname", nullable = false)
     @NotBlank(message = "Provide lastname is a required field and should not be blank.")
     @Size(min = 2, max = 50, message = "Lastname should be between 2 and 50 characters.")
     private @NotNull String lastName;
 
-    @Column(name = "age")
+    @Column(name = "age", nullable = false)
     @Range(min = 1, max = 99, message = "Age should be within the range of 1 - 99")
     private Integer age;
 
-    @Column(name = "dob")
+    @Column(name = "dob", nullable = false)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @NotNull(message = "Best Before Date is a required field and should not be null.")
     @Pattern(
@@ -56,15 +56,15 @@ public class Donor implements Serializable {
     private Date dateOfBirth;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "gender")
+    @Column(name = "gender", nullable = false)
     @NotNull (message = "Gender is a required field and should not be null.")
     private GenderType Gender;
 
-    @Column(name = "city")
+    @Column(name = "city", nullable = false)
     @NotBlank(message = "Provided city is a required field and should not be blank.")
     private @NotNull String city;
 
-    @Column(name = "phone_number")
+    @Column(name = "phone_number", unique = true, nullable = false)
     @NotBlank(message = "Provided phone number is a required field and should not be blank.")
     @Pattern(
             regexp = "^(\\+\\d{1,2}\\s?)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$",

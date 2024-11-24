@@ -15,7 +15,12 @@ import java.sql.Timestamp;
 public class APIResponse<T> {
     private String message;
     private HttpStatus status;
+
+    // @note: This is the payload that will usually be returned.
     private T payload;
+
+    // @note: If there is an error, this will be the new payload.
+    private String errorTrace;
 
     //region Timestamp
     private Timestamp timestamp;

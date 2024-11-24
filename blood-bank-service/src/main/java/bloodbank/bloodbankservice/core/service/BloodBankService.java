@@ -22,7 +22,7 @@ import java.util.List;
 @Service
 public class BloodBankService {
     //region DEFAULTS
-    private static final String BLOOD_BANK_NOT_FOUND = "BloodBank with id %s not found";
+    private static final String BLOOD_BANK_NOT_FOUND = "BloodBank with provided %s is not found";
     //endregion
 
     private final BloodBankRepository bloodBankRepository;
@@ -57,7 +57,8 @@ public class BloodBankService {
     }
 
     public void saveBloodBanks(final List<@Valid BloodBank> bloodBanks) {
-        bloodBankRepository.saveAll(bloodBanks);
+        bloodBankRepository
+                .saveAll(bloodBanks);
     }
 
     public void updateBloodBank(final @Valid BloodBank bloodBank, final Long id) throws EntityNotFoundException  {
@@ -73,6 +74,18 @@ public class BloodBankService {
         var bloodBankToDelete = findBloodBankOrThrowException(id);
 
         bloodBankRepository.delete(bloodBankToDelete);
+        return true;
+    }
+
+    public Boolean deleteBloodBanks(final List<Long> ids) throws EntityNotFoundException {
+        for (var id: ids) {
+            if (!bloodBankRepository.existsById(id)) {
+                throw new EntityNotFoundException(String.format(BLOOD_BANK_NOT_FOUND, id));
+            } else {
+                bloodBankRepository
+                        .deleteById(id);
+            }
+        }
         return true;
     }
 

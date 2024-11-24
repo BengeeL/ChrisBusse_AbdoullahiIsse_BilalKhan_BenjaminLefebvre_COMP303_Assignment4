@@ -8,8 +8,6 @@ import java.util.List;
 
 @Repository
 public interface BloodStockRepository extends JpaRepository<BloodStock, Long> {
-    List<BloodStock> findAllBloodStocks();
     List<BloodStock> findBloodStocksByBloodGroup(final String bloodGroup);
     BloodStock findBloodStockByBloodGroup(final String bloodGroup);
-    BloodStock findBloodStockByIdAndBloodGroupAndQuantity(final Long id, final String bloodGroup, final Integer quantity);
 }
