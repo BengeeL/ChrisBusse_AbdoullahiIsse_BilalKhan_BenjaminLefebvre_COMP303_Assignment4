@@ -52,25 +52,13 @@ public class BloodStockService {
     }
 
     public void saveBloodStock(final @Valid BloodStock bloodStock) {
-//        BloodStock existingBloodStock = bloodStockRepository.findBloodStockByIdAndBloodGroupAndQuantity(
-//                bloodStock.getId(),
-//                bloodStock.getBloodGroup(),
-//                bloodStock.getQuantity()
-//        );
-//
-//        if (existingBloodStock != null) {
-//            throw new EntityExistsException(
-//                    String.format(BLOOD_STOCK_EXISTS,
-//                            bloodStock.getId(),
-//                            bloodStock.getBloodGroup(),
-//                            bloodStock.getStatus())
-//            );
-//        }
-        bloodStockRepository.save(bloodStock);
+        bloodStockRepository
+                .save(bloodStock);
     }
 
     public void saveBloodStocks(final List<@Valid BloodStock> bloodStocks) {
-        bloodStockRepository.saveAll(bloodStocks);
+        bloodStockRepository
+                .saveAll(bloodStocks);
     }
 
     public void updateBloodStock(final @Valid BloodStock bloodStock, final Long id) throws EntityNotFoundException {
@@ -78,20 +66,27 @@ public class BloodStockService {
         var bloodStockToUpdate = findBloodStockOrThrowException(id);
 
         updateBloodStockAttributes(bloodStockToUpdate, bloodStock);
-        bloodStockRepository.save(bloodStockToUpdate);
+        bloodStockRepository
+                .save(bloodStockToUpdate);
     }
 
     public Boolean deleteBloodStock(final Long id) throws EntityNotFoundException {
         // @note: throws EntityNotFoundException
         var bloodStockToDelete = findBloodStockOrThrowException(id);
 
-        bloodStockRepository.delete(bloodStockToDelete);
+        bloodStockRepository
+                .delete(bloodStockToDelete);
         return true;
     }
 
     public Boolean deleteBloodStocks(final List<Long> ids) throws EntityNotFoundException {
         for (var id: ids){
-            deleteBloodStock(id);
+            if (!bloodStockRepository.existsById(id)) {
+                throw new EntityNotFoundException(String.format(BLOOD_STOCK_NOT_FOUND, id));
+            } else {
+                bloodStockRepository
+                        .deleteById(id);
+            }
         }
 
         return true;

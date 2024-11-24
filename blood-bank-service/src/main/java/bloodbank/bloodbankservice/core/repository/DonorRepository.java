@@ -1,10 +1,15 @@
 package bloodbank.bloodbankservice.core.repository;
 
 import bloodbank.bloodbankservice.core.entities.Donor;
-import org.springframework.data.repository.CrudRepository;
+import bloodbank.bloodbankservice.core.entities.enums.GenderType;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
-public interface DonorRepository extends CrudRepository<Donor, Long> {
-    // TODO: Add anything else within here.
+public interface DonorRepository extends JpaRepository<Donor, Long> {
+    List<Donor> findDonorsByAge(final Integer age);
+    List<Donor> findDonorsByCity(final String city);
+    List<Donor> findDonorsByGender(final GenderType gender);
 }
