@@ -14,6 +14,18 @@ import java.sql.Date;
 import java.time.Instant;
 import java.util.List;
 
+// TODO: Test this controller and refactor to clean up rough code.
+
+/**
+ * Controller class for managing BloodBank entities.
+ * @author Muhammad Bilal Khan
+ * @version 1.0.0
+ * @since 1.0.0
+ * @see bloodbank.bloodbankservice.core.entities.BloodStock
+ * @see bloodbank.bloodbankservice.core.service.BloodStockService
+ * @see bloodbank.bloodbankservice.core.utils.APIResponse
+ * @see bloodbank.bloodbankservice.core.utils.APIResponseHandler
+ */
 @RequestMapping("api/v1/")
 @Controller
 public class BloodStockController {
