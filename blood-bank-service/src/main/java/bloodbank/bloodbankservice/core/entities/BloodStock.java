@@ -24,7 +24,7 @@ import java.util.Date;
 @ToString
 @Builder
 @Entity
-@Table(name = "bb_blood_bank")
+@Table(name = "bb_blood_stock")
 public class BloodStock implements Serializable{
     @Serial
     private static final long serialVersionUID = 1L;

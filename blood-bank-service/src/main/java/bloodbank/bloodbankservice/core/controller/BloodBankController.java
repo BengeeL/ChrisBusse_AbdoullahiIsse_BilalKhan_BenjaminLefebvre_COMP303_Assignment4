@@ -3,17 +3,16 @@ package bloodbank.bloodbankservice.core.controller;
 import bloodbank.bloodbankservice.core.entities.BloodBank;
 import bloodbank.bloodbankservice.core.service.BloodBankService;
 import bloodbank.bloodbankservice.core.utils.APIResponse;
+import bloodbank.bloodbankservice.core.utils.APIResponseHandler;
 import jakarta.persistence.EntityExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
+import java.util.Collections;
 import java.util.List;
-
-// TODO: Test this controller and refactor to clean up rough code.
 
 /**
  * Controller class for managing BloodBank entities.
@@ -26,7 +25,7 @@ import java.util.List;
  * @see bloodbank.bloodbankservice.core.utils.APIResponse
  */
 @RequestMapping("api/v1/blood-bank/")
-@Controller
+@RestController
 public class BloodBankController {
     @Autowired
     private final BloodBankService bloodBankService;
@@ -52,24 +51,17 @@ public class BloodBankController {
         var bloodBankEntity = bloodBankService.findBloodBankByBloodBankName(bloodBankName);
 
         if (bloodBankEntity == null) {
-            return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .body(APIResponse.<BloodBank>builder()
-                            .message("Blood Bank deleted successfully.")
-                            .status(HttpStatus.OK)
-                            .payload(null)
-                            .errorTrace(String.format("Blood Bank with name %s not found", bloodBankName)) // @note: Is this necessary?
-                            .timestamp(Instant.now())
-                            .build());
+            return APIResponseHandler.error(
+                    "Blood Bank with name: %s was not found.",
+                    HttpStatus.NOT_FOUND,
+                    bloodBankName);
         } else {
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(APIResponse.<BloodBank>builder()
-                            .message("Blood Bank retrieved successfully.")
-                            .status(HttpStatus.OK)
-                            .payload(bloodBankEntity)
-                            .timestamp(Instant.now())
-                            .build());
+            return APIResponseHandler.payloadSuccess(
+                    "Blood Bank with name: %s retrieved successfully.",
+                    HttpStatus.OK,
+                    bloodBankEntity,
+                    bloodBankName);
+
         }
     }
 
@@ -78,23 +70,16 @@ public class BloodBankController {
         var bloodBankEntities = bloodBankService.findAllBloodBanks();
 
         if (bloodBankEntities.isEmpty()) {
-            return ResponseEntity
-                    .status(HttpStatus.NO_CONTENT)
-                    .body(APIResponse.<List<BloodBank>>builder()
-                            .message("No Blood Banks found.")
-                            .status(HttpStatus.NO_CONTENT)
-                            .payload(bloodBankEntities)
-                            .timestamp(Instant.now())
-                            .build());
+            return APIResponseHandler.collection(
+                    "No Blood Banks were found.",
+                    HttpStatus.NO_CONTENT,
+                    Collections.emptyList());
+
         } else {
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(APIResponse.<List<BloodBank>>builder()
-                            .message("Blood Banks retrieved successfully.")
-                            .status(HttpStatus.OK)
-                            .payload(bloodBankEntities)
-                            .timestamp(Instant.now())
-                            .build());
+            return APIResponseHandler.collection(
+                    "All Blood Banks were successfully retrieved.",
+                    HttpStatus.OK,
+                    bloodBankEntities);
         }
     }
 
@@ -119,32 +104,25 @@ public class BloodBankController {
                     .build();
             bloodBankService.saveBloodBank(bloodBank);
 
-            return ResponseEntity
-                    .status(HttpStatus.CREATED)
-                    .body(APIResponse.<BloodBank>builder()
-                            .message("Blood Bank has been added successfully.")
-                            .status(HttpStatus.CREATED)
-                            .payload(bloodBank)
-                            .timestamp(Instant.now())
-                            .build());
+            return APIResponseHandler.payloadSuccess(
+                    "Blood Bank with name: %s has been added successfully.",
+                    HttpStatus.CREATED,
+                    bloodBank,
+                    BloodBankName
+            );
+
         } catch (EntityExistsException e) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(APIResponse.<BloodBank>builder()
-                            .message("Blood Bank already exists.")
-                            .status(HttpStatus.BAD_REQUEST)
-                            .errorTrace(e.getMessage())
-                            .timestamp(Instant.now())
-                            .build());
+            return APIResponseHandler.error(
+                    "Blood Bank already exists. Error: %s",
+                    HttpStatus.BAD_REQUEST,
+                    e.getMessage());
+
         } catch (Exception e) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(APIResponse.<BloodBank>builder()
-                            .message("Failed to add Blood Bank.")
-                            .status(HttpStatus.BAD_REQUEST)
-                            .errorTrace(e.getMessage())
-                            .timestamp(Instant.now())
-                            .build());
+            return APIResponseHandler.error(
+                    "Failed to add provided Blood Bank. Error: %s",
+                    HttpStatus.BAD_REQUEST,
+                    e.getMessage()
+            );
         }
     }
 
@@ -154,37 +132,25 @@ public class BloodBankController {
             var deleted = bloodBankService.deleteBloodBank(id);
 
             if (deleted) {
-                return ResponseEntity
-                        .status(HttpStatus.OK)
-                        .body(APIResponse.<Boolean>builder()
-                                .message("Blood Bank deleted successfully.")
-                                .status(HttpStatus.OK)
-                                .payload(true)
-                                .timestamp(Instant.now())
-                                .build());
+                return APIResponseHandler.payloadSuccess(
+                        "Blood Bank with id %s deleted successfully.",
+                        HttpStatus.OK,
+                        true,
+                        id);
+
             } else {
-                return ResponseEntity
-                        .status(HttpStatus.OK)
-                        .body(APIResponse.<Boolean>builder()
-                                .message(
-                                        String.format(
-                                                "Blood Bank with id %s was either not found or it's deletion failed.",
-                                                id))
-                                .status(HttpStatus.OK)
-                                .payload(false)
-                                .timestamp(Instant.now())
-                                .build());
+                return APIResponseHandler.payloadError(
+                        "Blood Bank with id %s was either not found or it's deletion failed.",
+                        HttpStatus.OK,
+                        false,
+                        id);
             }
 
         } catch (Exception e) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(APIResponse.<Boolean>builder()
-                            .message("Failed to delete Blood Bank.")
-                            .status(HttpStatus.BAD_REQUEST)
-                            .errorTrace(e.getMessage())
-                            .timestamp(Instant.now())
-                            .build());
+           return APIResponseHandler.error(
+                   "Failed to delete Blood Bank, getting error: %s",
+                   HttpStatus.BAD_REQUEST,
+                   e.getMessage());
         }
     }
 
@@ -195,14 +161,11 @@ public class BloodBankController {
     ) {
         bloodBankService.updateBloodBank(bloodBank, id);
 
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(APIResponse.<Boolean>builder()
-                        .message(String.format("Blood Bank with id %s updated successfully.", id))
-                        .status(HttpStatus.OK)
-                        .payload(true)
-                        .timestamp(Instant.now())
-                        .build());
+        return APIResponseHandler.payloadSuccess(
+                        "Blood Bank with id %s updated successfully",
+                        HttpStatus.OK,
+                        true,
+                        id);
     }
 
 
@@ -211,23 +174,17 @@ public class BloodBankController {
         var bloodBankEntity = bloodBankService.findBloodBankById(id);
 
         if (bloodBankEntity == null) {
-            return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .body(APIResponse.<BloodBank>builder()
-                                    .message(String.format("Blood Bank with id %s not found", id))
-                                    .status(HttpStatus.NOT_FOUND)
-                                    .payload(null)
-                                    .timestamp(Instant.now())
-                                    .build());
+            return APIResponseHandler.error(
+                    "Blood Bank with id %s was not found.",
+                    HttpStatus.NOT_FOUND,
+                    id);
+
         } else {
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(APIResponse.<BloodBank>builder()
-                            .message("Blood Bank retrieved successfully.")
-                            .status(HttpStatus.OK)
-                            .payload(bloodBankEntity)
-                            .timestamp(Instant.now())
-                            .build());
+            return APIResponseHandler.payloadSuccess(
+                    "Blood Bank with id %s retrieved successfully.",
+                    HttpStatus.OK,
+                    bloodBankEntity,
+                    id);
         }
     }
     //endregion

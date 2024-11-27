@@ -12,10 +12,10 @@ public class APIResponseHandler {
     }
 
     public static <T> ResponseEntity<APIResponse<T>> success(final T payload) {
-        return success("The Operation was completed successfully", HttpStatus.OK, payload);
+        return payloadSuccess("The Operation was completed successfully", HttpStatus.OK, payload);
     }
 
-    public static <T> ResponseEntity<APIResponse<T>> success(
+    public static <T> ResponseEntity<APIResponse<T>> payloadSuccess(
             final String message,
             final HttpStatus status,
             final T payload,
@@ -46,6 +46,22 @@ public class APIResponseHandler {
 
     }
 
+    public static <T> ResponseEntity<APIResponse<T>> payloadError(
+            final String message,
+            final HttpStatus status,
+            final T payload,
+            final Object... args // @note: Optional args to pass to the message (e.g., id).
+    ) {
+        return ResponseEntity
+                .status(status == null ? HttpStatus.INTERNAL_SERVER_ERROR : status)
+                .body(APIResponse.<T>builder()
+                        .status(status == null ? HttpStatus.INTERNAL_SERVER_ERROR : status)
+                        .errorTrace(String.format(message, args))
+                        .payload(payload)
+                        .timestamp(Instant.now())
+                        .build());
+    }
+
     public static <T> ResponseEntity<APIResponse<T>> created(
             final String message,
             final HttpStatus status,
@@ -56,7 +72,7 @@ public class APIResponseHandler {
             return error(message, status, args);
         }
 
-        return success(message, status, payload, args);
+        return payloadSuccess(message, status, payload, args);
     }
 
     public static <T> ResponseEntity<APIResponse<List<T>>> collection(
@@ -67,6 +83,17 @@ public class APIResponseHandler {
     ) {
         if (status.is4xxClientError() || status.is5xxServerError()) {
             return error(message, status, args);
+        }
+
+        if (args.length == 0) {
+            return ResponseEntity
+                    .status(status)
+                    .body(APIResponse.<List<T>>builder()
+                            .message(message)
+                            .status(status)
+                            .payload(payload)
+                            .timestamp(Instant.now())
+                            .build());
         }
 
         return ResponseEntity
