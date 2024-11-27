@@ -4,6 +4,7 @@ import bloodbank.bloodbankservice.core.entities.BloodStock;
 import bloodbank.bloodbankservice.core.entities.enums.StatusType;
 import bloodbank.bloodbankservice.core.service.BloodStockService;
 import bloodbank.bloodbankservice.core.utils.APIResponse;
+import bloodbank.bloodbankservice.core.utils.APIResponseHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,10 +12,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
-import java.time.Instant;
+import java.util.Collections;
 import java.util.List;
 
-// TODO: Test this controller and refactor to clean up rough code.
 
 /**
  * Controller class for managing BloodBank entities.
@@ -53,23 +53,16 @@ public class BloodStockController {
         var bloodStockEntities = bloodStockService.findAllBloodStocks();
 
         if (bloodStockEntities.isEmpty()) {
-            return ResponseEntity
-                    .status(HttpStatus.NO_CONTENT)
-                    .body(APIResponse.<List<BloodStock>>builder()
-                            .message("No Blood Stocks found.")
-                            .status(HttpStatus.NOT_FOUND)
-                            .payload(bloodStockEntities)
-                            .timestamp(Instant.now())
-                            .build());
+            return APIResponseHandler.collection(
+                    "No Blood Stocks were found.",
+                    HttpStatus.NOT_FOUND,
+                    Collections.emptyList());
+
         } else {
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(APIResponse.<List<BloodStock>>builder()
-                            .message("Blood Stocks retrieved successfully.")
-                            .status(HttpStatus.OK)
-                            .payload(bloodStockEntities)
-                            .timestamp(Instant.now())
-                            .build());
+            return APIResponseHandler.collection(
+                    "All Blood Stocks were successfully retrieved.",
+                    HttpStatus.OK,
+                    bloodStockEntities);
         }
     }
 
@@ -90,23 +83,17 @@ public class BloodStockController {
                     .build();
             bloodStockService.saveBloodStock(bloodStock);
 
-            return ResponseEntity
-                    .status(HttpStatus.CREATED)
-                    .body(APIResponse.<BloodStock>builder()
-                            .message("Blood Stock has been added successfully.")
-                            .status(HttpStatus.CREATED)
-                            .payload(bloodStock)
-                            .timestamp(Instant.now())
-                            .build());
+            return APIResponseHandler.payloadSuccess(
+                    "Blood Stock with name: %s and status: %s has been added successfully.",
+                    HttpStatus.CREATED,
+                    bloodStock,
+                    bloodGroup, status.toString().toUpperCase());
+
         } catch (Exception e) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(APIResponse.<BloodStock>builder()
-                            .message("Failed to add Blood Stock.")
-                            .status(HttpStatus.BAD_REQUEST)
-                            .errorTrace(e.getMessage())
-                            .timestamp(Instant.now())
-                            .build());
+            return APIResponseHandler.error(
+                    "Failed to add provided Blood Stock. Error: %s",
+                    HttpStatus.BAD_REQUEST,
+                    e.getMessage());
         }
     }
 
@@ -116,36 +103,25 @@ public class BloodStockController {
             var deleted = bloodStockService.deleteBloodStock(id);
 
             if (deleted) {
-                return ResponseEntity
-                        .status(HttpStatus.OK)
-                        .body(APIResponse.<Boolean>builder()
-                                .message("Blood Stock deleted successfully.")
-                                .status(HttpStatus.OK)
-                                .payload(true)
-                                .timestamp(Instant.now())
-                                .build());
+                return APIResponseHandler.payloadSuccess(
+                        "Blood Stock with id %s was deleted successfully.",
+                        HttpStatus.OK,
+                        true,
+                        id);
+
             } else {
-                return ResponseEntity
-                        .status(HttpStatus.OK)
-                        .body(APIResponse.<Boolean>builder()
-                                .message(
-                                        String.format(
-                                                "Blood Stock with id %s was either not found or it's deletion failed.",
-                                                id))
-                                .status(HttpStatus.OK)
-                                .payload(false)
-                                .timestamp(Instant.now())
-                                .build());
+                return APIResponseHandler.payloadError(
+                        "Blood Stock with id %s was either not found or it's deletion failed.",
+                        HttpStatus.OK,
+                        false,
+                        id);
             }
+
         } catch (Exception e) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(APIResponse.<Boolean>builder()
-                            .message("Failed to delete Blood Stock.")
-                            .status(HttpStatus.BAD_REQUEST)
-                            .errorTrace(e.getMessage())
-                            .timestamp(Instant.now())
-                            .build());
+            return APIResponseHandler.error(
+                    "Failed to delete Blood Stock. Error: %s",
+                    HttpStatus.BAD_REQUEST,
+                    e.getMessage());
         }
     }
 
@@ -153,25 +129,17 @@ public class BloodStockController {
     public ResponseEntity<APIResponse<List<BloodStock>>> findBloodStocksByBloodGroup(@PathVariable(value = "bloodGroup") String bloodGroup) {
         var bloodStockEntities = bloodStockService.findBloodStocksByBloodGroup(bloodGroup);
 
-        // TODO: Duplicate code below, refactor.
         if (bloodStockEntities.isEmpty()) {
-            return ResponseEntity
-                    .status(HttpStatus.NO_CONTENT)
-                    .body(APIResponse.<List<BloodStock>>builder()
-                            .message("No Blood Stocks found.")
-                            .status(HttpStatus.NOT_FOUND)
-                            .payload(bloodStockEntities)
-                            .timestamp(Instant.now())
-                            .build());
+            return APIResponseHandler.collection(
+                    "No Blood Stocks were found.",
+                    HttpStatus.NO_CONTENT,
+                    bloodStockEntities);
+
         } else {
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(APIResponse.<List<BloodStock>>builder()
-                            .message("Blood Stocks retrieved successfully.")
-                            .status(HttpStatus.OK)
-                            .payload(bloodStockEntities)
-                            .timestamp(Instant.now())
-                            .build());
+            return APIResponseHandler.collection(
+                    "All Blood Stocks were successfully retrieved.",
+                    HttpStatus.OK,
+                    bloodStockEntities);
         }
     }
 
@@ -182,53 +150,37 @@ public class BloodStockController {
     ) {
         bloodStockService.updateBloodStock(bloodStock, id);
 
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(APIResponse.<Boolean>builder()
-                        .message(String.format("Blood Stock with id %s updated successfully.", id))
-                        .status(HttpStatus.OK)
-                        .payload(true)
-                        .timestamp(Instant.now())
-                        .build());
+        return APIResponseHandler.payloadSuccess(
+                "Blood Stock with id %s updated successfully.",
+                HttpStatus.OK,
+                true,
+                id);
     }
 
     @DeleteMapping("/find/delete")
     public ResponseEntity<APIResponse<Boolean>> deleteBloodStockById(@RequestParam long id) {
-        // TODO: Duplicate code below, refactor.
         try {
             var deleted = bloodStockService.deleteBloodStock(id);
 
             if (deleted) {
-                return ResponseEntity
-                        .status(HttpStatus.OK)
-                        .body(APIResponse.<Boolean>builder()
-                                .message("Blood Stock deleted successfully.")
-                                .status(HttpStatus.OK)
-                                .payload(true)
-                                .timestamp(Instant.now())
-                                .build());
+                return APIResponseHandler.payloadSuccess(
+                        "Blood Stock with id %s deleted successfully.",
+                        HttpStatus.OK,
+                        true,
+                        id);
+
             } else {
-                return ResponseEntity
-                        .status(HttpStatus.OK)
-                        .body(APIResponse.<Boolean>builder()
-                                .message(
-                                        String.format(
-                                                "Blood Stock with id %s was either not found or it's deletion failed.",
-                                                id))
-                                .status(HttpStatus.OK)
-                                .payload(false)
-                                .timestamp(Instant.now())
-                                .build());
+                return APIResponseHandler.payloadError(
+                        "Blood Stock with id %s was either not found or it's deletion failed.",
+                        HttpStatus.OK,
+                        false,
+                        id);
             }
         } catch (Exception e) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(APIResponse.<Boolean>builder()
-                            .message("Failed to delete Blood Stock.")
-                            .status(HttpStatus.BAD_REQUEST)
-                            .errorTrace(e.getMessage())
-                            .timestamp(Instant.now())
-                            .build());
+            return APIResponseHandler.error(
+                    "Failed to delete Blood Stock. Error: %s",
+                    HttpStatus.BAD_REQUEST,
+                    e.getMessage());
         }
     }
 
@@ -237,23 +189,17 @@ public class BloodStockController {
         var bloodStockEntity = bloodStockService.findBloodStockById(id);
 
         if (bloodStockEntity == null) {
-            return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .body(APIResponse.<BloodStock>builder()
-                            .message(String.format("Blood Stock with id %s not found", id))
-                            .status(HttpStatus.NOT_FOUND)
-                            .payload(null)
-                            .timestamp(Instant.now())
-                            .build());
+            return APIResponseHandler.error(
+                    "Blood Stock with id %s was not found.",
+                    HttpStatus.NOT_FOUND,
+                    id);
+
         } else {
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(APIResponse.<BloodStock>builder()
-                            .message("Blood Stock retrieved successfully.")
-                            .status(HttpStatus.OK)
-                            .payload(bloodStockEntity)
-                            .timestamp(Instant.now())
-                            .build());
+            return APIResponseHandler.payloadSuccess(
+                    "Blood Stock with id %s successfully retrieved.",
+                    HttpStatus.OK,
+                    bloodStockEntity,
+                    id);
         }
     }
     //endregion

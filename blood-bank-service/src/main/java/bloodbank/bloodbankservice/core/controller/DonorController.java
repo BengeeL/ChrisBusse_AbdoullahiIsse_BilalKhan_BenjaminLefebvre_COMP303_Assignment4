@@ -15,8 +15,6 @@ import java.sql.Date;
 import java.util.Collections;
 import java.util.List;
 
-// TODO: Test this controller and refactor to clean up rough code.
-
 /**
  * Controller class for managing Donor entities.
  * @author Muhammad Bilal Khan
@@ -56,14 +54,12 @@ public class DonorController {
             return APIResponseHandler.collection(
                     "No Donors found.",
                     HttpStatus.NO_CONTENT,
-                    donorEntities
-            );
+                    donorEntities);
         } else {
             return APIResponseHandler.collection(
                     "Donors retrieved successfully.",
                     HttpStatus.OK,
-                    donorEntities
-            );
+                    donorEntities);
         }
     }
 
@@ -75,15 +71,13 @@ public class DonorController {
             return APIResponseHandler.collection(
                     "No Donors found.",
                     HttpStatus.NO_CONTENT,
-                    Collections.emptyList()
-            );
+                    Collections.emptyList());
         } else {
             return APIResponseHandler.collection(
                     "Donors with age: %d retrieved successfully.",
                     HttpStatus.OK,
                     donorEntities,
-                    age
-            );
+                    age);
         }
     }
 
@@ -95,15 +89,13 @@ public class DonorController {
             return APIResponseHandler.collection(
                     "No Donors found.",
                     HttpStatus.NO_CONTENT,
-                    donorEntities
-            );
+                    donorEntities);
         } else {
             return APIResponseHandler.collection(
                     "Donors with city: %s retrieved successfully.",
                     HttpStatus.OK,
                     donorEntities,
-                    city
-            );
+                    city);
         }
     }
 
@@ -115,15 +107,13 @@ public class DonorController {
             return APIResponseHandler.collection(
                     "No Donors found.",
                     HttpStatus.NO_CONTENT,
-                    donorEntities
-            );
+                    donorEntities);
         } else {
             return APIResponseHandler.collection(
                     "Donors with gender: %s retrieved successfully.",
                     HttpStatus.OK,
                     donorEntities,
-                    genderType
-            );
+                    genderType);
         }
     }
 
@@ -146,18 +136,17 @@ public class DonorController {
                     .build();
             donorService.saveDonor(donor);
 
-            return APIResponseHandler.success(
-                    "Donor has been added successfully.",
+            return APIResponseHandler.payloadSuccess(
+                    "Donor with firstname: %s and lastname: %s has been added successfully.",
                     HttpStatus.CREATED,
-                    donor
-            );
+                    donor,
+                    donor.getFirstName(), donor.getLastName());
 
         } catch (Exception e) {
             return APIResponseHandler.error(
                     "Failed to add Donor.",
                     HttpStatus.BAD_REQUEST,
-                    e.getMessage()
-            );
+                    e.getMessage());
         }
     }
 
@@ -168,25 +157,25 @@ public class DonorController {
             var deleted = donorService.deleteDonor(id);
 
             if (deleted) {
-                return APIResponseHandler.success(
+                return APIResponseHandler.payloadSuccess(
                         "Donor with id %s deleted successfully.",
                         HttpStatus.OK,
                         true,
-                        id
-                );
+                        id);
+
             } else {
                 return APIResponseHandler.error(
                         "Donor with id %s was either not found or it's deletion failed.",
                         HttpStatus.OK,
-                        id
-                );
+                        id);
+
             }
         } catch (Exception e) {
             return APIResponseHandler.error(
                     "Failed to delete Donor, getting error: %s",
                     HttpStatus.BAD_REQUEST,
-                    e.getMessage()
-            );
+                    e.getMessage());
+
         }
     }
 
@@ -197,12 +186,11 @@ public class DonorController {
     ) {
         donorService.updateDonor(donor, id);
 
-        return APIResponseHandler.success(
+        return APIResponseHandler.payloadSuccess(
                 "Donor with id %s updated successfully.",
                 HttpStatus.OK,
                 donor,
-                id
-        );
+                id);
     }
 
     @DeleteMapping("/find/delete/")
@@ -210,7 +198,7 @@ public class DonorController {
         try {
             for (var id: ids) {
                 if (donorService.deleteDonor(id)) {
-                    return APIResponseHandler.success(
+                    return APIResponseHandler.payloadSuccess(
                             "Donor with id %s deleted successfully.",
                             HttpStatus.OK,
                             true,
@@ -241,15 +229,13 @@ public class DonorController {
             return APIResponseHandler.error(
                     "Donor with id %s was not found.",
                     HttpStatus.NOT_FOUND,
-                    id
-            );
+                    id);
         } else {
-            return APIResponseHandler.success(
+            return APIResponseHandler.payloadSuccess(
                     "Donor with id %s retrieved successfully.",
                     HttpStatus.OK,
                     donorEntity,
-                    id
-            );
+                    id);
         }
     }
     //endregion
