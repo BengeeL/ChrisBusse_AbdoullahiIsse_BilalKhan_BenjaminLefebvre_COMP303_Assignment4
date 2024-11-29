@@ -4,7 +4,6 @@ import bloodbank.bloodbankservice.core.entities.enums.GenderType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.validator.constraints.Range;
@@ -14,7 +13,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.Date;
 
 @Getter
@@ -50,9 +49,6 @@ public class Donor implements Serializable {
     @Column(name = "dob", nullable = false)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @NotNull(message = "Best Before Date is a required field and should not be null.")
-    @Pattern(
-            regexp = "\\d{1,2}\\/\\d{1,2}\\/\\d{2,4}",
-            message = "Date of Birth does not conform with the regex provided.")
     private Date dateOfBirth;
 
     @Enumerated(EnumType.STRING)
@@ -66,19 +62,15 @@ public class Donor implements Serializable {
 
     @Column(name = "phone_number", unique = true, nullable = false)
     @NotBlank(message = "Provided phone number is a required field and should not be blank.")
-    @Pattern(
-            regexp = "^(\\+\\d{1,2}\\s?)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$",
-            message = "Phone number does not conform with the regex provided."
-    )
     private @NotNull String phoneNumber;
 
     //region Timestamps
     @Column(name="created_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     @CreatedDate
-    private Timestamp CreatedAt;
+    private Instant CreatedAt;
 
     @Column(name="modified_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     @LastModifiedDate
-    private Timestamp ModifiedAt;
+    private Instant ModifiedAt;
     //endregion
 }

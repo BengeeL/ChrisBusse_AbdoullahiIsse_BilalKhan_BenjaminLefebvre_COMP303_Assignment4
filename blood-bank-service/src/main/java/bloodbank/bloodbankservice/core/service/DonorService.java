@@ -8,7 +8,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 
 /**
@@ -116,7 +116,7 @@ public class DonorService {
         target.setGender(source.getGender());
         target.setCity(source.getCity());
         target.setPhoneNumber(source.getPhoneNumber());
-        target.setModifiedAt(new Timestamp(System.currentTimeMillis()));
+        target.setModifiedAt(Instant.now());
     }
     //endregion
 }
