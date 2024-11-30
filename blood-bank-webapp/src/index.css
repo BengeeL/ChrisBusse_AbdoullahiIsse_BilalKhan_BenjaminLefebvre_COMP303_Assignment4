@@ -24,7 +24,11 @@ a:hover {
 
 body {
   margin: 0;
+  /*margin: auto;*/
   display: flex;
+  flex-direction: column;
+
+  /*align-content: center;*/
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
@@ -53,6 +57,68 @@ button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
+
+
+form {
+  /*width: fit-content;*/
+  padding: 20px;
+  border-radius: 5px;
+  border: 3px solid gray;
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  font-weight: bold;
+}
+
+input, select, label {
+  /*width: 50%;*/
+  /*display: block;*/
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.submit {
+  background-color: green;
+  color: white;
+  padding: 10px;
+}
+
+.submit:hover {
+  background-color: darkgreen;
+}
+
+.navbar {
+  list-style-type: none;
+  padding: 0;
+  display: flex;
+  background-color: #3c3c3c;
+}
+
+.navbar li {
+  margin: 0 15px;
+}
+
+.navbar li a {
+  color: white;
+  text-decoration: none;
+  padding: 14px 20px;
+  display: block;
+}
+
+.navbar li a:hover {
+  background-color: #71635d;
+}
+
+.active{
+  background-color: #a39593;
+  text-decoration: underline;
+}
+
+
 
 @media (prefers-color-scheme: light) {
   :root {
