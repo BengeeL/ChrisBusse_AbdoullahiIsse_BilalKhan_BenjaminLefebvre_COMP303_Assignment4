@@ -9,7 +9,6 @@ import java.util.List;
 
 @Repository
 public interface DonorRepository extends JpaRepository<Donor, Long> {
-    List<Donor> findDonorsByAge(final Integer age);
     List<Donor> findDonorsByCity(final String city);
     List<Donor> findDonorsByGender(final GenderType gender);
 }

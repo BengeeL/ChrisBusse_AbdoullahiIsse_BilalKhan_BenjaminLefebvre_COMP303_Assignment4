@@ -42,11 +42,6 @@ public class DonorService {
         return findDonorOrThrowException(id);
     }
 
-    public List<Donor> findDonorsByAge(final Integer age) {
-        return donorRepository
-                .findDonorsByAge(age);
-    }
-
     public List<Donor> findDonorsByCity(final String city) {
         return donorRepository
                 .findDonorsByCity(city);
@@ -111,7 +106,6 @@ public class DonorService {
     ) {
         target.setFirstName(source.getFirstName());
         target.setLastName(source.getLastName());
-        target.setAge(source.getAge());
         target.setDateOfBirth(source.getDateOfBirth());
         target.setGender(source.getGender());
         target.setCity(source.getCity());

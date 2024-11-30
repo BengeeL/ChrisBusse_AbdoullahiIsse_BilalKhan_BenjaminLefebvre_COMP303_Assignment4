@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 
 /**
@@ -114,7 +115,7 @@ public class BloodBankService {
         target.setPhoneNumber(source.getPhoneNumber());
         target.setWebsite(source.getWebsite());
         target.setEmail(source.getEmail());
-        target.setModifiedAt(new Timestamp(System.currentTimeMillis()));
+        target.setModifiedAt(Instant.now());
     }
     //endregion
 }

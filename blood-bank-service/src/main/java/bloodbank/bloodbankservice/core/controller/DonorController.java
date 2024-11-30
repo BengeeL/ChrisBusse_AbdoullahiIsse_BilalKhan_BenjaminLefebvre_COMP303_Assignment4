@@ -95,31 +95,31 @@ public class DonorController {
     }
 
 
-    @Operation(
-            summary = "Find all donors within the database by their age.",
-            description = "Returns an APIResponse with all donors within the database by their age."
-    )
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "200 if the donors were found successfully."),
-            @ApiResponse(responseCode = "204", description = "204 if the donors were not found.")
-    })
-    @GetMapping(value = "/find/age", produces = "application/json")
-    public ResponseEntity<APIResponse<List<Donor>>> findDonorsByAge(@RequestParam(value = "age") Integer age) {
-        var donorEntities = donorService.findDonorsByAge(age);
-
-        if (donorEntities.isEmpty()) {
-            return APIResponseHandler.collection(
-                    "No Donors found.",
-                    HttpStatus.NO_CONTENT,
-                    Collections.emptyList());
-        } else {
-            return APIResponseHandler.collection(
-                    "Donors with age: %d retrieved successfully.",
-                    HttpStatus.OK,
-                    donorEntities,
-                    age);
-        }
-    }
+//    @Operation(
+//            summary = "Find all donors within the database by their age.",
+//            description = "Returns an APIResponse with all donors within the database by their age."
+//    )
+//    @ApiResponses({
+//            @ApiResponse(responseCode = "200", description = "200 if the donors were found successfully."),
+//            @ApiResponse(responseCode = "204", description = "204 if the donors were not found.")
+//    })
+//    @GetMapping(value = "/find/age", produces = "application/json")
+//    public ResponseEntity<APIResponse<List<Donor>>> findDonorsByAge(@RequestParam(value = "age") Integer age) {
+//        var donorEntities = donorService.findDonorsByAge(age);
+//
+//        if (donorEntities.isEmpty()) {
+//            return APIResponseHandler.collection(
+//                    "No Donors found.",
+//                    HttpStatus.NO_CONTENT,
+//                    Collections.emptyList());
+//        } else {
+//            return APIResponseHandler.collection(
+//                    "Donors with age: %d retrieved successfully.",
+//                    HttpStatus.OK,
+//                    donorEntities,
+//                    age);
+//        }
+//    }
 
 
     @Operation(
@@ -192,19 +192,20 @@ public class DonorController {
             @RequestParam Date dateOfBirth,
             @RequestParam GenderType gender,
             @RequestParam String city,
-            @RequestParam String phoneNumber
+            @RequestParam String phoneNumber,
+            @RequestParam String password
     ) {
         try {
             var donor = Donor.builder()
                     .firstName(firstName)
                     .lastName(lastName)
-                    .age(age)
                     .dateOfBirth(dateOfBirth)
                     .gender(gender)
                     .city(city)
                     .phoneNumber(phoneNumber)
                     .CreatedAt(Instant.now())
                     .ModifiedAt(Instant.now())
+                    .password(password)
                     .build();
             donorService.saveDonor(donor);
 
@@ -283,7 +284,6 @@ public class DonorController {
                 .id(id)
                 .firstName(firstName)
                 .lastName(lastName)
-                .age(age)
                 .dateOfBirth(dateOfBirth)
                 .gender(gender)
                 .city(city)
