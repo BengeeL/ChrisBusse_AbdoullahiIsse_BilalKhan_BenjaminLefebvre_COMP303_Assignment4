@@ -42,10 +42,6 @@ public class Donor implements Serializable {
     @Size(min = 2, max = 50, message = "Lastname should be between 2 and 50 characters.")
     private @NotNull String lastName;
 
-    @Column(name = "age", nullable = false)
-    @Range(min = 1, max = 99, message = "Age should be within the range of 1 - 99")
-    private Integer age;
-
     @Column(name = "dob", nullable = false)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @NotNull(message = "Best Before Date is a required field and should not be null.")
@@ -67,6 +63,10 @@ public class Donor implements Serializable {
     @Column(name = "phone_number", unique = true, nullable = false)
     @NotBlank(message = "Provided phone number is a required field and should not be blank.")
     private @NotNull String phoneNumber;
+
+    @Column(name = "password", nullable = false)
+    @NotBlank(message = "Password is a required field and should not be blank.")
+    private @NotNull String password;
 
     //region Timestamps
     @Column(name="created_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
