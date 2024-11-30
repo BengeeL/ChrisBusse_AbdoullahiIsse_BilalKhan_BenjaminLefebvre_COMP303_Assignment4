@@ -64,6 +64,10 @@ public class Donor implements Serializable {
     @NotBlank(message = "Provided city is a required field and should not be blank.")
     private @NotNull String city;
 
+    @Column(name = "bloodGroup", nullable = false)
+    @NotBlank(message = "Blood Group is a required field and should not be blank.")
+    private @NotNull String bloodGroup;
+
     @Column(name = "phone_number", unique = true, nullable = false)
     @NotBlank(message = "Provided phone number is a required field and should not be blank.")
     @Pattern(

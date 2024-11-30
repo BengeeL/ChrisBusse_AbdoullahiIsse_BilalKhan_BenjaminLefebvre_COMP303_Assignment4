@@ -30,11 +30,14 @@ public class DonorDto implements Serializable {
     @Range(message = "Age should be within the range of 1 - 99", min = 1, max = 99)
     Integer age;
 
-    @NotNull(message = "Best Before Date is a required field and should not be null.")
+    @NotNull(message = "Date Of Birth is a required field and should not be null.")
     Date dateOfBirth;
 
     @NotNull(message = "Gender is a required field and should not be null.")
     GenderType Gender;
+
+    @NotNull(message = "Blood Group is a required field and should not be null.")
+    String bloodGroup;
 
     @NotBlank(message = "Provided city is a required field and should not be blank.")
     String city;
