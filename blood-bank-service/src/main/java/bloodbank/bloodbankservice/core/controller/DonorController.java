@@ -5,13 +5,17 @@ import bloodbank.bloodbankservice.core.entities.enums.GenderType;
 import bloodbank.bloodbankservice.core.service.DonorService;
 import bloodbank.bloodbankservice.core.utils.APIResponse;
 import bloodbank.bloodbankservice.core.utils.APIResponseHandler;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
+import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 
@@ -25,7 +29,9 @@ import java.util.List;
  * @see bloodbank.bloodbankservice.core.utils.APIResponse
  * @see bloodbank.bloodbankservice.core.utils.APIResponseHandler
  */
-@Controller
+@RequestMapping("api/v1/donor/")
+@RestController
+@Tag(name = "Donor API Endpoints", description = "Endpoints for managing Donors.")
 public class DonorController {
     @Autowired
     private final DonorService donorService;
@@ -34,19 +40,44 @@ public class DonorController {
         this.donorService = donorService;
     }
 
+
     // @note: This is what it should be
-    @GetMapping("/find/{id}")
+    @Operation(
+            summary = "Find a donor by its given id.",
+            description = "Returns an APIResponse with the donor if found by its id.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "200 if the donor was found successfully by the id provided."),
+            @ApiResponse(responseCode = "404", description = "404 if the donor was not found successfully by the id provided.")
+    })
+    @GetMapping(value = "/find/{id}")
     public ResponseEntity<APIResponse<Donor>> findDonorByIdPathVariable(@PathVariable(value = "id") Long id) {
         return wrappedDonorResponse(id);
     }
 
+
     // @note: This could be changed later on (or as an option if you want to use RequestParam).
-    @GetMapping("/find/id")
+    @Operation(
+            summary = "Find a donor by its given id (using RequestParam).",
+            description = "Returns an APIResponse with the donor if found by its id.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "200 if the donor was found successfully by the id provided."),
+            @ApiResponse(responseCode = "404", description = "404 if the donor was not found successfully by the id provided.")
+    })
+    @GetMapping(value = "/find/id")
     public ResponseEntity<APIResponse<Donor>> findDonorByIdRequestParam(@RequestParam(value = "id") Long id) {
         return wrappedDonorResponse(id);
     }
 
-    @GetMapping("/find/all")
+
+    @Operation(
+            summary = "Find all donors within the database.",
+            description = "Returns an APIResponse with all donors within the database."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "200 if the donors were found successfully."),
+            @ApiResponse(responseCode = "204", description = "204 if the donors were not found.")
+    })
+    @GetMapping(value = "/find/all")
     public ResponseEntity<APIResponse<List<Donor>>> findAllDonors() {
         var donorEntities = donorService.findAllDonors();
 
@@ -63,7 +94,16 @@ public class DonorController {
         }
     }
 
-    @GetMapping("/find/age")
+
+    @Operation(
+            summary = "Find all donors within the database by their age.",
+            description = "Returns an APIResponse with all donors within the database by their age."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "200 if the donors were found successfully."),
+            @ApiResponse(responseCode = "204", description = "204 if the donors were not found.")
+    })
+    @GetMapping(value = "/find/age", produces = "application/json")
     public ResponseEntity<APIResponse<List<Donor>>> findDonorsByAge(@RequestParam(value = "age") Integer age) {
         var donorEntities = donorService.findDonorsByAge(age);
 
@@ -81,7 +121,16 @@ public class DonorController {
         }
     }
 
-    @GetMapping("/find/city")
+
+    @Operation(
+            summary = "Find all donors within the database by their city.",
+            description = "Returns an APIResponse with all donors within the database by their city."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "200 if the donors were found successfully."),
+            @ApiResponse(responseCode = "204", description = "204 if the donors were not found.")
+    })
+    @GetMapping(value = "/find/city")
     public ResponseEntity<APIResponse<List<Donor>>> findDonorsByCity(@RequestParam(value = "city") String city) {
         var donorEntities = donorService.findDonorsByCity(city);
 
@@ -99,6 +148,15 @@ public class DonorController {
         }
     }
 
+
+    @Operation(
+            summary = "Find all donors within the database that fit the given gender.",
+            description = "Returns an APIResponse with all donors within the database that fit the given gender."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "200 if the donors were found successfully."),
+            @ApiResponse(responseCode = "204", description = "204 if the donors were not found.")
+    })
     @GetMapping("/find/gender")
     public ResponseEntity<APIResponse<List<Donor>>> findDonorsByGender(@RequestParam(value = "gender") GenderType genderType) {
         var donorEntities = donorService.findDonorsByGender(genderType);
@@ -118,13 +176,23 @@ public class DonorController {
     }
 
 
-    @PostMapping("/add")
+    @Operation(
+            summary = "Add a new donor to the database.",
+            description = "Returns an APIResponse with the newly added donor."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "201 if the donor was added successfully."),
+            @ApiResponse(responseCode = "400", description = "400 if the donor was not added successfully.")
+    })
+    @PostMapping(value = "/add")
     public ResponseEntity<APIResponse<Donor>> addNewDonor(
             @RequestParam String firstName,
             @RequestParam String lastName,
             @RequestParam Integer age,
             @RequestParam Date dateOfBirth,
-            @RequestParam GenderType gender
+            @RequestParam GenderType gender,
+            @RequestParam String city,
+            @RequestParam String phoneNumber
     ) {
         try {
             var donor = Donor.builder()
@@ -133,6 +201,10 @@ public class DonorController {
                     .age(age)
                     .dateOfBirth(dateOfBirth)
                     .gender(gender)
+                    .city(city)
+                    .phoneNumber(phoneNumber)
+                    .CreatedAt(Instant.now())
+                    .ModifiedAt(Instant.now())
                     .build();
             donorService.saveDonor(donor);
 
@@ -144,14 +216,22 @@ public class DonorController {
 
         } catch (Exception e) {
             return APIResponseHandler.error(
-                    "Failed to add Donor.",
+                    "Failed to add Donor. Error: %s",
                     HttpStatus.BAD_REQUEST,
                     e.getMessage());
         }
     }
 
 
-    @DeleteMapping("/find/delete/{id}")
+    @Operation(
+            summary = "Delete a donor from the database.",
+            description = "Returns an APIResponse with the deletion status of the donor."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "200 if the donor was deleted successfully."),
+            @ApiResponse(responseCode = "400", description = "400 if the donor was not deleted successfully.")
+    })
+    @DeleteMapping(value = "/find/delete/{id}")
     public ResponseEntity<APIResponse<Boolean>> deleteDonorById(@PathVariable(value = "id") Long id) {
         try {
             var deleted = donorService.deleteDonor(id);
@@ -179,11 +259,37 @@ public class DonorController {
         }
     }
 
-    @PutMapping("/find/update")
+
+    @Operation(
+            summary = "Update a donor in the database.",
+            description = "Returns an APIResponse with the updated donor."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "200 if the donor was updated successfully."),
+            @ApiResponse(responseCode = "400", description = "400 if the donor was not updated successfully.")
+    })
+    @PutMapping(value = "/find/update")
     public ResponseEntity<APIResponse<Donor>> updateDonorById(
             @RequestParam Long id,
-            @RequestBody Donor donor
+            @RequestParam String firstName,
+            @RequestParam String lastName,
+            @RequestParam Integer age,
+            @RequestParam Date dateOfBirth,
+            @RequestParam GenderType gender,
+            @RequestParam String city,
+            @RequestParam String phoneNumber
     ) {
+        Donor donor = Donor.builder()
+                .id(id)
+                .firstName(firstName)
+                .lastName(lastName)
+                .age(age)
+                .dateOfBirth(dateOfBirth)
+                .gender(gender)
+                .city(city)
+                .phoneNumber(phoneNumber)
+                .build();
+
         donorService.updateDonor(donor, id);
 
         return APIResponseHandler.payloadSuccess(
@@ -193,7 +299,16 @@ public class DonorController {
                 id);
     }
 
-    @DeleteMapping("/find/delete/")
+
+    @Operation(
+            summary = "Delete multiple donors from the database.",
+            description = "Returns an APIResponse with the deletion status of the donors."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "200 if the donors were deleted successfully."),
+            @ApiResponse(responseCode = "400", description = "400 if the donors were not deleted successfully.")
+    })
+    @DeleteMapping(value = "/find/delete/", produces = "application/json")
     public ResponseEntity<APIResponse<Boolean>> deleteDonorsById(@RequestParam List<Long> ids) {
         try {
             for (var id: ids) {

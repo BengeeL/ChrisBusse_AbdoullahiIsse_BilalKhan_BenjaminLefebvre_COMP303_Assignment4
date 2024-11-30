@@ -4,7 +4,6 @@ import bloodbank.bloodbankservice.core.entities.enums.StatusType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.validator.constraints.Range;
@@ -14,7 +13,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.Date;
 
 @Getter
@@ -45,9 +44,6 @@ public class BloodStock implements Serializable{
     @Column(name = "best_before", nullable = false)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @NotNull(message = "Best Before Date is a required field and should not be null.")
-    @Pattern(
-            regexp = "\\d{1,2}\\/\\d{1,2}\\/\\d{2,4}",
-            message = "Best Before data does not conform with the regex provided.")
     private Date bestBefore;
 
     @Column(name = "status", nullable = false)
@@ -58,10 +54,10 @@ public class BloodStock implements Serializable{
     //region Timestamps
     @Column(name="created_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     @CreatedDate
-    private Timestamp CreatedAt;
+    private Instant CreatedAt;
 
     @Column(name="modified_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     @LastModifiedDate
-    private Timestamp ModifiedAt;
+    private Instant ModifiedAt;
     //endregion
 }
