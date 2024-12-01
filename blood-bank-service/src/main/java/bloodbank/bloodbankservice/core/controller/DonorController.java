@@ -69,6 +69,30 @@ public class DonorController {
         return wrappedDonorResponse(id);
     }
 
+    @Operation(
+            summary = "Find a donor by its username.",
+            description = "Returns an APIResponse with the donor if found by its id.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "200 if the donor was found successfully by the username provided."),
+            @ApiResponse(responseCode = "404", description = "404 if the donor was not found successfully by the username provided.")
+    })
+    @GetMapping(value = "/find/username/{username}")
+    public ResponseEntity<APIResponse<Donor>> findDonorByUsernamePathVariable(@PathVariable(value = "username") String username) {
+        var donorEntity = donorService.findDonorByUserName(username);
+
+        if (donorEntity == null) {
+            return APIResponseHandler.error(
+                    "Donor with username %s was not found.",
+                    HttpStatus.NOT_FOUND,
+                    username);
+        } else {
+            return APIResponseHandler.payloadSuccess(
+                    "Donor with username %s retrieved successfully.",
+                    HttpStatus.OK,
+                    donorEntity,
+                    username);
+        }
+    }
 
     @Operation(
             summary = "Find all donors within the database.",

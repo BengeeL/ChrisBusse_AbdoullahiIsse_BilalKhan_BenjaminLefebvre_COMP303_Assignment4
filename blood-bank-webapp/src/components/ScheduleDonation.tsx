@@ -1,9 +1,20 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
+import api from "../utils/api";
 
 interface ScheduleDonationProps {
   storeDonation: (donation: string) => void;
   bloodGroup: string;
+}
+
+interface BloodBank {
+  id: number;
+  bloodBankName: string;
+  address: string;
+  city: string;
+  phoneNumber: string;
+  website: string;
+  email: string;
 }
 
 export default function ScheduleDonation({
@@ -13,8 +24,31 @@ export default function ScheduleDonation({
   const [bloodBank, setBloodBank] = useState("");
   const [date, setDate] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [availableBloodBanks, setAvailableBloodBanks] = useState<BloodBank[]>(
+    []
+  );
 
   const auth = useAuth();
+
+  useEffect(() => {
+    getBloodBanks();
+    console.log(localStorage.getItem("token"));
+  }, []);
+
+  const getBloodBanks = async () => {
+    if (isLoading) return;
+
+    try {
+      setIsLoading(true);
+
+      const response = await api.get("/api/v1/blood-bank/find/all");
+      setAvailableBloodBanks(response.data?.payload);
+    } catch (error) {
+      console.error("Error fetching blood banks:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,11 +90,12 @@ export default function ScheduleDonation({
           required
         >
           <option value=''>Select a blood bank</option>
-          <option value='Saint Obama Blood Centre'>
-            Saint Obama Blood Centre
-          </option>
-          <option value='TD Blood Bank'>TD Blood Bank</option>
-          <option value='RBC Hospital'>RBC Hospital</option>
+          {availableBloodBanks.length > 0 &&
+            availableBloodBanks.map((bank, index) => (
+              <option key={index} value={bank.bloodBankName}>
+                {bank.bloodBankName}
+              </option>
+            ))}
         </select>
       </div>
 
