@@ -42,6 +42,11 @@ public class DonorService {
         return findDonorOrThrowException(id);
     }
 
+    public Donor findDonorByUserName(final String userName) {
+        return donorRepository
+                .findDonorByUserName(userName);
+    }
+
     public List<Donor> findDonorsByCity(final String city) {
         return donorRepository
                 .findDonorsByCity(city);

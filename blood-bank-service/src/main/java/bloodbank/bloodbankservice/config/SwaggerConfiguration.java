@@ -12,8 +12,6 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
 
-// TODO: Refactor code if necessary and clean up later.
-
 @Configuration
 public class SwaggerConfiguration {
     //region Constant Fields
@@ -29,6 +27,7 @@ public class SwaggerConfiguration {
     private String prodUrl;
     //endregion
 
+    // NOTE: Please add your contact information below (if you want to be included in the Swagger documentation).
     private List<Contact> contacts = List.of(
             createContact("Benjamin Lefebvre", "<github url>", "<email address>"),
             createContact("Chris Busse", "<github url>", "<email address>"),

@@ -4,7 +4,6 @@ import bloodbank.bloodbankservice.core.entities.enums.GenderType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Value;
-import org.hibernate.validator.constraints.Range;
 
 import java.io.Serializable;
 import java.util.Date;

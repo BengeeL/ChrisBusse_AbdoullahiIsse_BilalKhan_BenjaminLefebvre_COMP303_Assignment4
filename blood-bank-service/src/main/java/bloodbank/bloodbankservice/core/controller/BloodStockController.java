@@ -45,7 +45,6 @@ public class BloodStockController {
     // ********************* GET *********************
     // ***********************************************
 
-    // @note: This is what is should be (again).
     @Operation(
             summary = "Find a blood stock by its given id.",
             description = "Returns an APIResponse with the blood stock if found by its id."
@@ -60,7 +59,6 @@ public class BloodStockController {
     }
 
 
-    // @note: This could be changed later on (or as an option if you want to use RequestParam).
     @Operation(
             summary = "Find a blood stock by its given id (using RequestParam).",
             description = "Returns an APIResponse with the blood stock if found by its id."
@@ -81,7 +79,7 @@ public class BloodStockController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "200 if the blood stocks were found successfully."),
-            @ApiResponse(responseCode = "204", description = "204 if the blood stocks were not found (NO_CONTENT).")
+            @ApiResponse(responseCode = "404", description = "404 if the blood stocks were not found.")
     })
     @GetMapping("/find/all")
     public ResponseEntity<APIResponse<List<BloodStock>>> findAllBloodStocks() {
@@ -107,8 +105,7 @@ public class BloodStockController {
             description = "Returns an APIResponse with all the blood stocks within the database by their blood group."
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "200 if the blood stocks were found successfully."),
-            @ApiResponse(responseCode = "204", description = "204 if the blood stocks were not found (NO_CONTENT).")
+            @ApiResponse(responseCode = "200", description = "200 if the blood stocks were found successfully (empty list otherwise."),
     })
     @GetMapping("/find/{bloodGroup}")
     public ResponseEntity<APIResponse<List<BloodStock>>> findBloodStocksByBloodGroup(@PathVariable(value = "bloodGroup") String bloodGroup) {
@@ -117,7 +114,7 @@ public class BloodStockController {
         if (bloodStockEntities.isEmpty()) {
             return APIResponseHandler.collection(
                     "No Blood Stocks were found.",
-                    HttpStatus.NO_CONTENT,
+                    HttpStatus.OK,
                     bloodStockEntities);
 
         } else {
