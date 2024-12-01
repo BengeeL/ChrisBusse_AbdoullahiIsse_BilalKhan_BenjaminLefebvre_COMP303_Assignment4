@@ -14,9 +14,9 @@
 }
 
 .main-content {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 a {
@@ -95,7 +95,7 @@ label {
   max-height: 300px;
 }
 
-.donation{
+.donation {
   list-style: none;
   margin: 0 0 12px;
   padding: 10px;
@@ -107,12 +107,12 @@ label {
 @media (max-width: 1024px) {
   .dashboard {
     flex-direction: column;
-    width: 96vw; 
+    width: 96vw;
   }
 
   .dashboard-left-panel {
     width: 80vw;
-    margin-top: 250px;
+    margin-top: 20px;
     margin-bottom: 2vw;
   }
 
