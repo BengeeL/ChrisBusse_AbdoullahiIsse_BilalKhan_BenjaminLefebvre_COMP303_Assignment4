@@ -23,18 +23,18 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
-    @Size(min = 3, max = 50)
+    @NotBlank(message = "Username is a required field and should not be blank.")
+    @Size(min = 3, max = 50, message = "Username should be between 3 and 50 characters.")
     @Column(unique = true)
     private String username;
 
-    @NotBlank
-    @Size(max = 120)
+    @NotBlank(message = "Password is a required field and should not be blank.")
+    @Size(max = 120, message = "Password should not exceed 120 characters.")
     private String password;
 
-    @NotBlank
-    @Size(max = 50)
-    @Email
+    @NotBlank(message = "Email is a required field and should not be blank.")
+    @Size(max = 50, message = "Email should not exceed 50 characters.")
+    @Email(message = "Email that was provided is not of valid format.")
     @Column(unique = true)
     private String email;
 

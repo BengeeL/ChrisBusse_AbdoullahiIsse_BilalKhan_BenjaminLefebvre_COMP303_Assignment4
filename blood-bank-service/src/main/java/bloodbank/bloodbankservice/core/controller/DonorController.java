@@ -40,6 +40,9 @@ public class DonorController {
         this.donorService = donorService;
     }
 
+    // ***********************************************
+    // ********************* GET *********************
+    // ***********************************************
 
     // @note: This is what it should be
     @Operation(
@@ -88,34 +91,6 @@ public class DonorController {
                 HttpStatus.OK,
                 donorEntities);
     }
-
-
-//    @Operation(
-//            summary = "Find all donors within the database by their age.",
-//            description = "Returns an APIResponse with all donors within the database by their age."
-//    )
-//    @ApiResponses({
-//            @ApiResponse(responseCode = "200", description = "200 if the donors were found successfully."),
-//            @ApiResponse(responseCode = "204", description = "204 if the donors were not found.")
-//    })
-//    @GetMapping(value = "/find/age", produces = "application/json")
-//    public ResponseEntity<APIResponse<List<Donor>>> findDonorsByAge(@RequestParam(value = "age") Integer age) {
-//        var donorEntities = donorService.findDonorsByAge(age);
-//
-//        if (donorEntities.isEmpty()) {
-//            return APIResponseHandler.collection(
-//                    "No Donors found.",
-//                    HttpStatus.NO_CONTENT,
-//                    Collections.emptyList());
-//        } else {
-//            return APIResponseHandler.collection(
-//                    "Donors with age: %d retrieved successfully.",
-//                    HttpStatus.OK,
-//                    donorEntities,
-//                    age);
-//        }
-//    }
-
 
     @Operation(
             summary = "Find all donors within the database by their city.",
@@ -170,6 +145,9 @@ public class DonorController {
         }
     }
 
+    // ***********************************************
+    // ********************* POST ********************
+    // ***********************************************
 
     @Operation(
             summary = "Add a new donor to the database.",
@@ -211,6 +189,9 @@ public class DonorController {
         }
     }
 
+    // ***********************************************
+    // ******************** DELETE *******************
+    // ***********************************************
 
     @Operation(
             summary = "Delete a donor from the database.",
@@ -248,6 +229,46 @@ public class DonorController {
         }
     }
 
+
+    @Operation(
+            summary = "Delete multiple donors from the database.",
+            description = "Returns an APIResponse with the deletion status of the donors."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "200 if the donors were deleted successfully."),
+            @ApiResponse(responseCode = "400", description = "400 if the donors were not deleted successfully.")
+    })
+    @DeleteMapping(value = "/find/delete/", produces = "application/json")
+    public ResponseEntity<APIResponse<Boolean>> deleteDonorsById(@RequestParam List<Long> ids) {
+        try {
+            for (var id: ids) {
+                if (donorService.deleteDonor(id)) {
+                    return APIResponseHandler.payloadSuccess(
+                            "Donor with id %s deleted successfully.",
+                            HttpStatus.OK,
+                            true,
+                            id
+                    );
+                }
+            }
+
+            return APIResponseHandler.error(
+                    "Donor with id %s was either not found or it's deletion failed.",
+                    HttpStatus.OK,
+                    ids
+            );
+        } catch (Exception e) {
+            return APIResponseHandler.error(
+                    "Failed to delete Donor, getting error: %s",
+                    HttpStatus.BAD_REQUEST,
+                    e.getMessage()
+            );
+        }
+    }
+    
+    // ***********************************************
+    // ********************* PUT *********************
+    // ***********************************************
 
     @Operation(
             summary = "Update a donor in the database.",
@@ -321,42 +342,6 @@ public class DonorController {
             return APIResponseHandler.error(
                     "Failed to update donor: " + e.getMessage(),
                     HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    @Operation(
-            summary = "Delete multiple donors from the database.",
-            description = "Returns an APIResponse with the deletion status of the donors."
-    )
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "200 if the donors were deleted successfully."),
-            @ApiResponse(responseCode = "400", description = "400 if the donors were not deleted successfully.")
-    })
-    @DeleteMapping(value = "/find/delete/", produces = "application/json")
-    public ResponseEntity<APIResponse<Boolean>> deleteDonorsById(@RequestParam List<Long> ids) {
-        try {
-            for (var id: ids) {
-                if (donorService.deleteDonor(id)) {
-                    return APIResponseHandler.payloadSuccess(
-                            "Donor with id %s deleted successfully.",
-                            HttpStatus.OK,
-                            true,
-                            id
-                    );
-                }
-            }
-
-            return APIResponseHandler.error(
-                    "Donor with id %s was either not found or it's deletion failed.",
-                    HttpStatus.OK,
-                    ids
-            );
-        } catch (Exception e) {
-            return APIResponseHandler.error(
-                    "Failed to delete Donor, getting error: %s",
-                    HttpStatus.BAD_REQUEST,
-                    e.getMessage()
-            );
         }
     }
 

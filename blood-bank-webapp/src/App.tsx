@@ -1,5 +1,10 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import Authentication from "./pages/Authentication";
 import DonorDashboard from "./pages/DonorDashboard";
@@ -11,22 +16,25 @@ const App: React.FC = () => {
   return (
     <AuthProvider>
       <Router>
-        <div className="app-container">
-          <Navbar />
-          <main className="main-content">
-            <Routes>
-              <Route path="/authentication" element={<Authentication />} />
-              <Route
-                path="/donor-dashboard"
-                element={
-                  <ProtectedRoute>
+        <div className='app-container'>
+          <Routes>
+            <Route path='/authentication' element={<Authentication />} />
+            <Route
+              path='/donor-dashboard'
+              element={
+                <ProtectedRoute>
+                  <Navbar />
+                  <main className='main-content'>
                     <DonorDashboard />
-                  </ProtectedRoute>
-                }
-              />
-              <Route path="/" element={<Navigate to="/donor-dashboard" replace />} />
-            </Routes>
-          </main>
+                  </main>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path='/'
+              element={<Navigate to='/donor-dashboard' replace />}
+            />
+          </Routes>
         </div>
       </Router>
     </AuthProvider>

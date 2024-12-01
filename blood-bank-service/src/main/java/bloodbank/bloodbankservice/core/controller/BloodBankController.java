@@ -38,6 +38,9 @@ public class BloodBankController {
         this.bloodBankService = bloodBankService;
     }
 
+    // ***********************************************
+    // ********************* GET *********************
+    // ***********************************************
 
     // @note: This is what it should be.
     @Operation(
@@ -51,7 +54,6 @@ public class BloodBankController {
     public ResponseEntity<APIResponse<BloodBank>> findBloodBankByIdPathVariable(@PathVariable(value = "id") long id) {
         return wrappedBloodBankResponse(id);
     }
-
 
     // @note: This could be changed later on (or as an option if you want use RequestParam).
     @Operation(
@@ -95,7 +97,6 @@ public class BloodBankController {
         }
     }
 
-
     @Operation(
             summary = "Find all blood bank entities.",
             description = "Returns an APIResponse with all the blood bank entities within the database."
@@ -122,6 +123,9 @@ public class BloodBankController {
         }
     }
 
+    // ***********************************************
+    // ********************* POST ********************
+    // ***********************************************
 
     @Operation(
             summary = "Add a new blood bank to the database.",
@@ -173,6 +177,9 @@ public class BloodBankController {
         }
     }
 
+    // ***********************************************
+    // ******************** DELETE *******************
+    // ***********************************************
 
     @Operation(
             summary = "Delete a blood bank from the database.",
@@ -210,6 +217,9 @@ public class BloodBankController {
         }
     }
 
+    // ***********************************************
+    // ********************* PUT *********************
+    // ***********************************************
 
     @Operation(
             summary = "Update a blood bank within the database.",
@@ -254,7 +264,6 @@ public class BloodBankController {
                     id);
         }
     }
-
 
     //region Class Helpers
     private ResponseEntity<APIResponse<BloodBank>> wrappedBloodBankResponse(final Long id) {

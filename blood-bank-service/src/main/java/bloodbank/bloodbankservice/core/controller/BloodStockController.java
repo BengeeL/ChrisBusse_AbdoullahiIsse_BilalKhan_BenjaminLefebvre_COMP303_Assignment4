@@ -41,6 +41,10 @@ public class BloodStockController {
         this.bloodStockService = bloodStockService;
     }
 
+    // ***********************************************
+    // ********************* GET *********************
+    // ***********************************************
+
     // @note: This is what is should be (again).
     @Operation(
             summary = "Find a blood stock by its given id.",
@@ -99,6 +103,37 @@ public class BloodStockController {
 
 
     @Operation(
+            summary = "Find blood stocks by their blood group.",
+            description = "Returns an APIResponse with all the blood stocks within the database by their blood group."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "200 if the blood stocks were found successfully."),
+            @ApiResponse(responseCode = "204", description = "204 if the blood stocks were not found (NO_CONTENT).")
+    })
+    @GetMapping("/find/{bloodGroup}")
+    public ResponseEntity<APIResponse<List<BloodStock>>> findBloodStocksByBloodGroup(@PathVariable(value = "bloodGroup") String bloodGroup) {
+        var bloodStockEntities = bloodStockService.findBloodStocksByBloodGroup(bloodGroup);
+
+        if (bloodStockEntities.isEmpty()) {
+            return APIResponseHandler.collection(
+                    "No Blood Stocks were found.",
+                    HttpStatus.NO_CONTENT,
+                    bloodStockEntities);
+
+        } else {
+            return APIResponseHandler.collection(
+                    "All Blood Stocks were successfully retrieved.",
+                    HttpStatus.OK,
+                    bloodStockEntities);
+        }
+    }
+
+
+    // ***********************************************
+    // ********************* POST ********************
+    // ***********************************************
+
+    @Operation(
             summary = "Add a new blood stock to the database.",
             description = "Returns an APIResponse with the newly added blood stock."
     )
@@ -136,6 +171,9 @@ public class BloodStockController {
         }
     }
 
+    // ***********************************************
+    // ******************** DELETE *******************
+    // ***********************************************
 
     @Operation(
             summary = "Delete a blood stock from the database.",
@@ -173,33 +211,43 @@ public class BloodStockController {
         }
     }
 
-
     @Operation(
-            summary = "Find blood stocks by their blood group.",
-            description = "Returns an APIResponse with all the blood stocks within the database by their blood group."
-    )
+            summary = "Delete blood stock from the database with its given id.",
+            description = "Returns an APIResponse with the deletion status (either true or false) of the blood stock.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "200 if the blood stocks were found successfully."),
-            @ApiResponse(responseCode = "204", description = "204 if the blood stocks were not found (NO_CONTENT).")
+            @ApiResponse(responseCode = "200", description = "200 if the blood stock was deleted successfully."),
+            @ApiResponse(responseCode = "400", description = "400 if the blood stock was not deleted successfully (BAD_REQUEST).")
     })
-    @GetMapping("/find/{bloodGroup}")
-    public ResponseEntity<APIResponse<List<BloodStock>>> findBloodStocksByBloodGroup(@PathVariable(value = "bloodGroup") String bloodGroup) {
-        var bloodStockEntities = bloodStockService.findBloodStocksByBloodGroup(bloodGroup);
+    @DeleteMapping("/find/delete")
+    public ResponseEntity<APIResponse<Boolean>> deleteBloodStockById(@RequestParam long id) {
+        try {
+            var deleted = bloodStockService.deleteBloodStock(id);
 
-        if (bloodStockEntities.isEmpty()) {
-            return APIResponseHandler.collection(
-                    "No Blood Stocks were found.",
-                    HttpStatus.NO_CONTENT,
-                    bloodStockEntities);
+            if (deleted) {
+                return APIResponseHandler.payloadSuccess(
+                        "Blood Stock with id %s deleted successfully.",
+                        HttpStatus.OK,
+                        true,
+                        id);
 
-        } else {
-            return APIResponseHandler.collection(
-                    "All Blood Stocks were successfully retrieved.",
-                    HttpStatus.OK,
-                    bloodStockEntities);
+            } else {
+                return APIResponseHandler.payloadError(
+                        "Blood Stock with id %s was either not found or it's deletion failed.",
+                        HttpStatus.OK,
+                        false,
+                        id);
+            }
+        } catch (Exception e) {
+            return APIResponseHandler.error(
+                    "Failed to delete Blood Stock. Error: %s",
+                    HttpStatus.BAD_REQUEST,
+                    e.getMessage());
         }
     }
 
+    // ***********************************************
+    // ********************* PUT *********************
+    // ***********************************************
 
     @Operation(
             summary = "Update a blood stock within the database.",
@@ -235,40 +283,6 @@ public class BloodStockController {
                 id);
     }
 
-
-    @Operation(
-            summary = "Delete blood stock from the database with its given id.",
-            description = "Returns an APIResponse with the deletion status (either true or false) of the blood stock.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "200 if the blood stock was deleted successfully."),
-            @ApiResponse(responseCode = "400", description = "400 if the blood stock was not deleted successfully (BAD_REQUEST).")
-    })
-    @DeleteMapping("/find/delete")
-    public ResponseEntity<APIResponse<Boolean>> deleteBloodStockById(@RequestParam long id) {
-        try {
-            var deleted = bloodStockService.deleteBloodStock(id);
-
-            if (deleted) {
-                return APIResponseHandler.payloadSuccess(
-                        "Blood Stock with id %s deleted successfully.",
-                        HttpStatus.OK,
-                        true,
-                        id);
-
-            } else {
-                return APIResponseHandler.payloadError(
-                        "Blood Stock with id %s was either not found or it's deletion failed.",
-                        HttpStatus.OK,
-                        false,
-                        id);
-            }
-        } catch (Exception e) {
-            return APIResponseHandler.error(
-                    "Failed to delete Blood Stock. Error: %s",
-                    HttpStatus.BAD_REQUEST,
-                    e.getMessage());
-        }
-    }
 
     //region Class Helpers
     private ResponseEntity<APIResponse<BloodStock>> wrappedBloodStockResponse(final Long id) {
