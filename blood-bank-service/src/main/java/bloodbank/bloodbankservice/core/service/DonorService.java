@@ -52,7 +52,7 @@ public class DonorService {
                 .findDonorsByGender(genderType);
     }
 
-    public void saveDonor(final Donor Donor) {
+    public void saveDonor(final @Valid Donor Donor) {
         donorRepository
                 .save(Donor);
     }

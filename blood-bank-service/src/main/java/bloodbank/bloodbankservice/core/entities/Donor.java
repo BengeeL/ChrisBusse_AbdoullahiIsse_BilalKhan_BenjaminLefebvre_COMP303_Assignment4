@@ -37,25 +37,25 @@ public class Donor implements Serializable {
     @Size(min = 2, max = 50, message = "Firstname should be between 2 and 50 characters.")
     private @NotNull String firstName;
 
-    @Column(name = "lastname")
+    @Column(name = "lastname", nullable = false)
     @Size(min = 2, max = 50, message = "If provided, lastname should be between 2 and 50 characters.")
     private String lastName;
 
-    @Column(name = "dob")
+    @Column(name = "dob", nullable = false)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date dateOfBirth;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "gender")
+    @Column(name = "gender", nullable = false)
     private GenderType gender;
 
-    @Column(name = "city")
+    @Column(name = "city", nullable = false)
     private String city;
 
-    @Column(name = "bloodGroup")
+    @Column(name = "bloodGroup", nullable = false)
     private String bloodGroup;
 
-    @Column(name = "phone_number", unique = true)
+    @Column(name = "phone_number", nullable = false)
     private String phoneNumber;
 
     //region Timestamps
