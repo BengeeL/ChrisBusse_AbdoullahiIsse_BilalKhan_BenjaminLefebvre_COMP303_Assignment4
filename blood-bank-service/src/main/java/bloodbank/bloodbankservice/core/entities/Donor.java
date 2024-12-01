@@ -32,6 +32,11 @@ public class Donor implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "username", nullable = false, unique = true)
+    @NotBlank(message = "Provided username is a required field and should not be blank.")
+    @Size(min = 2, max = 50, message = "Username should be between 2 and 50 characters.")
+    private @NotNull String userName;
+
     @Column(name = "firstname", nullable = false)
     @NotBlank(message = "Provided firstname is a required field and should not be blank.")
     @Size(min = 2, max = 50, message = "Firstname should be between 2 and 50 characters.")

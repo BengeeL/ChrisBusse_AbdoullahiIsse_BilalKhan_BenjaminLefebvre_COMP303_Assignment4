@@ -8,6 +8,7 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     try {
+      localStorage.removeItem('donations')
       await api.post('/api/auth/logout');
     } catch (error) {
       console.error('Error during logout:', error);

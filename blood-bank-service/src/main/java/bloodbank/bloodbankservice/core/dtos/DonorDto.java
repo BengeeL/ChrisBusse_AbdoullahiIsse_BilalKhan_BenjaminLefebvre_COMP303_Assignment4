@@ -21,6 +21,9 @@ import java.util.Date;
 public class DonorDto implements Serializable {
     Long id;
 
+    @NotBlank(message = "Provided username is a required field and should not be blank.")
+    String userName;
+
     @NotBlank(message = "Provided firstname is a required field and should not be blank.")
     String firstName;
 

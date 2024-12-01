@@ -3,6 +3,7 @@ import { useAuth } from "../context/AuthContext";
 import api from "../utils/api";
 
 interface Donor {
+  userName: string;
   id?: number;
   firstName?: string;
   lastName?: string | null;
@@ -53,7 +54,7 @@ const DonorProfile: React.FC<DonorProfileProps> = ({ onBloodGroupChange }) => {
 
         console.log("Looking for donor with username:", user.username);
         const existingDonor = response.data.payload?.find(
-          (d: Donor) => d.firstName === user.username
+          (d: Donor) => d.userName === user.username
         );
 
         if (existingDonor) {
@@ -62,32 +63,12 @@ const DonorProfile: React.FC<DonorProfileProps> = ({ onBloodGroupChange }) => {
             onBloodGroupChange?.(existingDonor.bloodGroup || '');
           }
         } else {
-          console.log("No existing donor found, creating new one...");
-          const today = new Date();
-          const formattedDate = today.toISOString().split('T')[0];
-          const newDonor: Donor = {
-            firstName: user.username,
-            lastName: user.username,
-            dateOfBirth: formattedDate,
-            gender: "PREFER_NOT_TO_SAY",
-            city: "",
-            phoneNumber: "",
-            bloodGroup: "A+",
-            age: 18,
-          };
-          
-          console.log("Creating new donor with data:", newDonor);
-          const createResponse = await api.post("/api/v1/donor/add", newDonor);
-          console.log("Create donor response:", createResponse.data);
-          
-          if (createResponse.data && createResponse.data.payload && isMounted) {
-            setDonor(createResponse.data.payload as Donor);
-            onBloodGroupChange?.(createResponse.data.payload.bloodGroup || '');
-          }
+          alert("No existing donor found with name" + user.username + "!!!");
         }
       } catch (error: any) {
         console.error("Error creating donor:", error);
         console.error("Error response:", error.response?.data);
+        alert(error)
         if (isMounted) {
           setError(error.response?.data?.message || error.message || "An error occurred");
         }
@@ -161,6 +142,8 @@ const DonorProfile: React.FC<DonorProfileProps> = ({ onBloodGroupChange }) => {
           name='firstName'
           value={donor?.firstName || ''}
           onChange={handleChange}
+          minLength={2}
+          maxLength={50}
           required
         />
       </div>
@@ -172,6 +155,8 @@ const DonorProfile: React.FC<DonorProfileProps> = ({ onBloodGroupChange }) => {
           name='lastName'
           value={donor?.lastName || ''}
           onChange={handleChange}
+          minLength={2}
+          maxLength={50}
           required
         />
       </div>
