@@ -27,9 +27,6 @@ public class DonorDto implements Serializable {
     @NotBlank(message = "Provide lastname is a required field and should not be blank.")
     String lastName;
 
-    @Range(message = "Age should be within the range of 1 - 99", min = 1, max = 99)
-    Integer age;
-
     @NotNull(message = "Date Of Birth is a required field and should not be null.")
     Date dateOfBirth;
 

@@ -37,32 +37,26 @@ public class Donor implements Serializable {
     @Size(min = 2, max = 50, message = "Firstname should be between 2 and 50 characters.")
     private @NotNull String firstName;
 
-    @Column(name = "lastname", nullable = false)
-    @NotBlank(message = "Provide lastname is a required field and should not be blank.")
-    @Size(min = 2, max = 50, message = "Lastname should be between 2 and 50 characters.")
-    private @NotNull String lastName;
+    @Column(name = "lastname")
+    @Size(min = 2, max = 50, message = "If provided, lastname should be between 2 and 50 characters.")
+    private String lastName;
 
-    @Column(name = "dob", nullable = false)
+    @Column(name = "dob")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @NotNull(message = "Best Before Date is a required field and should not be null.")
     private Date dateOfBirth;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "gender", nullable = false)
-    @NotNull (message = "Gender is a required field and should not be null.")
+    @Column(name = "gender")
     private GenderType gender;
 
-    @Column(name = "city", nullable = false)
-    @NotBlank(message = "Provided city is a required field and should not be blank.")
-    private @NotNull String city;
+    @Column(name = "city")
+    private String city;
 
-    @Column(name = "bloodGroup", nullable = false)
-    @NotBlank(message = "Blood Group is a required field and should not be blank.")
-    private @NotNull String bloodGroup;
+    @Column(name = "bloodGroup")
+    private String bloodGroup;
 
-    @Column(name = "phone_number", unique = true, nullable = false)
-    @NotBlank(message = "Provided phone number is a required field and should not be blank.")
-    private @NotNull String phoneNumber;
+    @Column(name = "phone_number", unique = true)
+    private String phoneNumber;
 
     //region Timestamps
     @Column(name="created_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")

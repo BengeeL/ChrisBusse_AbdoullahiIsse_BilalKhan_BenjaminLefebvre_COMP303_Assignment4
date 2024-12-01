@@ -1,140 +1,250 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import { useAuth } from "../context/AuthContext";
+import api from "../utils/api";
 
 interface Donor {
-  id: number;
-  firstName: string;
-  lastName: string;
-  age: string;
+  id?: number;
+  firstName?: string;
+  lastName?: string | null;
+  age?: number | null;
   dateOfBirth: string;
-  Gender: string;
-  bloodGroup: string;
-  city: string;
-  phoneNumber: string;
+  gender: string;
+  bloodGroup?: string;
+  city?: string | null;
+  phoneNumber?: string | null;
+  createdAt?: string;
+  modifiedAt?: string;
 }
 
-const DonorProfile: React.FC = () => {
+interface DonorProfileProps {
+  onBloodGroupChange?: (bloodGroup: string) => void;
+}
+
+const DonorProfile: React.FC<DonorProfileProps> = ({ onBloodGroupChange }) => {
   const [donor, setDonor] = useState<Donor | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const { user } = useAuth();
+
+  const formatDateForInput = (dateString: string) => {
+    if (!dateString) return '';
+    // Handle ISO date string format
+    if (dateString.includes('T')) {
+      return dateString.split('T')[0];
+    }
+    // Handle other date formats
+    const date = new Date(dateString);
+    return date.toISOString().split('T')[0];
+  };
 
   useEffect(() => {
+    let isMounted = true;
+
     const getDonor = async () => {
+      if (!user?.username || isLoading) return;
+      
       try {
-        // can't run backend, login not done so can't get currently logged in user.
-        // needs to be edited later
-        const response = await axios.get<Donor>(
-          "http://localhost:8080/api/v1/blood-donor/find/" + donor?.id
+        setIsLoading(true);
+        setError(null);
+        
+        console.log("Fetching all donors...");
+        const response = await api.get("/api/v1/donor/find/all");
+        console.log("All donors response:", response.data);
+
+        console.log("Looking for donor with username:", user.username);
+        const existingDonor = response.data.payload?.find(
+          (d: Donor) => d.firstName === user.username
         );
-        setDonor(response.data);
-      } catch (error) {
-        console.error("Error fetching donor profile:", error);
+
+        if (existingDonor) {
+          if (isMounted) {
+            setDonor(existingDonor as Donor);
+            onBloodGroupChange?.(existingDonor.bloodGroup || '');
+          }
+        } else {
+          console.log("No existing donor found, creating new one...");
+          const today = new Date();
+          const formattedDate = today.toISOString().split('T')[0];
+          const newDonor: Donor = {
+            firstName: user.username,
+            lastName: user.username,
+            dateOfBirth: formattedDate,
+            gender: "PREFER_NOT_TO_SAY",
+            city: "",
+            phoneNumber: "",
+            bloodGroup: "A+",
+            age: 18,
+          };
+          
+          console.log("Creating new donor with data:", newDonor);
+          const createResponse = await api.post("/api/v1/donor/add", newDonor);
+          console.log("Create donor response:", createResponse.data);
+          
+          if (createResponse.data && createResponse.data.payload && isMounted) {
+            setDonor(createResponse.data.payload as Donor);
+            onBloodGroupChange?.(createResponse.data.payload.bloodGroup || '');
+          }
+        }
+      } catch (error: any) {
+        console.error("Error creating donor:", error);
+        console.error("Error response:", error.response?.data);
+        if (isMounted) {
+          setError(error.response?.data?.message || error.message || "An error occurred");
+        }
+      } finally {
+        if (isMounted) setIsLoading(false);
       }
     };
 
     getDonor();
-  }, []);
+
+    return () => {
+      isMounted = false;
+    };
+  }, [user?.username]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     if (donor) {
-      setDonor({ ...donor, [e.target.name]: e.target.value });
+      const updatedDonor = { ...donor, [e.target.name]: e.target.value };
+      setDonor(updatedDonor);
+      if (e.target.name === 'bloodGroup') {
+        onBloodGroupChange?.(e.target.value);
+      }
     }
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (donor) {
-      try {
-        // can't connect to db though :(
-        await axios.put(
-          `http://localhost:8080/api/v1/blood-donor/find/update`,
-          donor,
-          { params: { id: donor.id } }
-        );
+    if (!donor || !donor.id) {
+      alert("Error: Donor ID is missing");
+      return;
+    }
+
+    try {
+      const updateResponse = await api.put(
+        `/api/v1/donor/update`,
+        donor
+      );
+      console.log("Update response:", updateResponse.data);
+      if (updateResponse.data.payload) {
+        setDonor(updateResponse.data.payload);
         alert("Profile updated successfully!");
-      } catch (error) {
-        console.error("Error updating donor profile:", error);
       }
+    } catch (error: any) {
+      console.error("Error updating profile:", error);
+      console.error("Error details:", {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status
+      });
+      alert(error.response?.data?.message || "Failed to update profile. Please try again.");
     }
   };
 
+  if (isLoading) {
+    return <div>Loading... {error && <div className="error">{error}</div>}</div>;
+  }
+
+  if (error) {
+    return <div className="error">{error}</div>;
+  }
+
   return (
     <form onSubmit={handleSubmit} className='dashboard-form'>
-      <h2>Donor Profile</h2>
 
-      <label htmlFor='firstName'>First Name</label>
-      <input
-        type='text'
-        name='firstName'
-        value={donor?.firstName}
-        onChange={handleChange}
-        required
-      />
+      <div>
+        <label htmlFor='firstName'>First Name</label>
+        <input
+          type='text'
+          name='firstName'
+          value={donor?.firstName || ''}
+          onChange={handleChange}
+          required
+        />
+      </div>
 
-      <label htmlFor='lastName'>Last Name</label>
-      <input
-        type='text'
-        name='lastName'
-        value={donor?.lastName}
-        onChange={handleChange}
-        required
-      />
+      <div>
+        <label htmlFor='lastName'>Last Name</label>
+        <input
+          type='text'
+          name='lastName'
+          value={donor?.lastName || ''}
+          onChange={handleChange}
+          required
+        />
+      </div>
 
-      <label htmlFor='dob'>Date Of Birth</label>
-      <input
-        type='date'
-        name='dob'
-        placeholder='DOB'
-        value={donor?.dateOfBirth}
-        onChange={handleChange}
-        required
-      />
+      <div>
+        <label htmlFor='dob'>Date Of Birth</label>
+        <input
+          type='date'
+          name='dateOfBirth'
+          placeholder='DOB'
+          value={formatDateForInput(donor?.dateOfBirth || '')}
+          onChange={handleChange}
+          required
+        />
+      </div>
 
-      <label htmlFor='gender'>Gender</label>
-      <select
-        name='gender'
-        onChange={handleChange}
-        value={donor?.Gender}
-        required
-      >
-        <option value='PREFER_NOT_TO_SAY'>I prefer not to say.</option>
-        <option value='MALE'>Male</option>
-        <option value='FEMALE'>Female</option>
-        <option value='OTHER'>Other</option>
-      </select>
-      <label htmlFor='bloodGroup'>Blood Group</label>
-      <select name='bloodGroup' id='bloodGroup'>
-        <option value='A+'>A+</option>
-        <option value='B+'>B+</option>
-        <option value='AB+'>AB+</option>
-        <option value='O+'>O+</option>
-        <option value='A-'>A-</option>
-        <option value='B-'>B-</option>
-        <option value='AB-'>AB-</option>
-        <option value='O-'>O-</option>
-      </select>
+      <div>
+        <label htmlFor='gender'>Gender</label>
+        <select
+          name='gender'
+          onChange={handleChange}
+          value={donor?.gender || ''}
+          required
+        >
+          <option value='PREFER_NOT_TO_SAY'>I prefer not to say.</option>
+          <option value='MALE'>Male</option>
+          <option value='FEMALE'>Female</option>
+          <option value='OTHER'>Other</option>
+        </select>
+      </div>
 
-      <label htmlFor='city'>City</label>
-      <input
-        type='text'
-        name='city'
-        value={donor?.city}
-        onChange={handleChange}
-        required
-      />
+      <div>
+        <label htmlFor='bloodGroup'>Blood Group</label>
+        <select
+          name='bloodGroup'
+          onChange={handleChange}
+          value={donor?.bloodGroup || ''}
+          required
+        >
+          <option value='A+'>A+</option>
+          <option value='A-'>A-</option>
+          <option value='B+'>B+</option>
+          <option value='B-'>B-</option>
+          <option value='AB+'>AB+</option>
+          <option value='AB-'>AB-</option>
+          <option value='O+'>O+</option>
+          <option value='O-'>O-</option>
+        </select>
+      </div>
 
-      <label htmlFor='phone'>Phone</label>
-      <input
-        type='text'
-        name='phone'
-        value={donor?.phoneNumber}
-        onChange={handleChange}
-        required
-      />
+      <div>
+        <label htmlFor='city'>City</label>
+        <input
+          type='text'
+          name='city'
+          value={donor?.city || ''}
+          onChange={handleChange}
+          required
+        />
+      </div>
 
-      <button type='submit' className={"submit"}>
-        Update Profile
-      </button>
+      <div>
+        <label htmlFor='phoneNumber'>Phone Number</label>
+        <input
+          type='tel'
+          name='phoneNumber'
+          value={donor?.phoneNumber || ''}
+          onChange={handleChange}
+          required
+        />
+      </div>
+
+      <button type='submit' className='dashboard-button'>Update Profile</button>
     </form>
   );
 };

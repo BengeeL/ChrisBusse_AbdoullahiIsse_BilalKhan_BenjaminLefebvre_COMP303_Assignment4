@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../utils/api";
+import '../styles/auth.css';
 
 interface RegisterRequest {
   username: string;
@@ -29,7 +30,7 @@ const UserRegistration: React.FC = () => {
 
     try {
       await api.post("/api/auth/register", user);
-      navigate("/authentication", { state: { message: "Registration successful! Please login." } });
+      navigate("/donor-dashboard");
     } catch (error: any) {
       setError(error.response?.data?.message || "Error during registration");
       console.error("Error registering:", error);
@@ -39,10 +40,9 @@ const UserRegistration: React.FC = () => {
   };
 
   return (
-    <div className="login-container">
-      <form onSubmit={handleSubmit} className="auth-form"> 
-        <h2>Register</h2>
-
+    <div className="auth-container">
+      <form onSubmit={handleSubmit} className="auth-form">
+        <h2>Create Account</h2>
         {error && <div className="error-message">{error}</div>}
 
         <label htmlFor="username">Username</label>
@@ -50,11 +50,11 @@ const UserRegistration: React.FC = () => {
           type="text"
           id="username"
           name="username"
-          placeholder="Username"
           value={user.username}
           onChange={handleChange}
-          disabled={isLoading}
           required
+          placeholder="Choose a username"
+          autoComplete="username"
         />
 
         <label htmlFor="email">Email</label>
@@ -62,11 +62,11 @@ const UserRegistration: React.FC = () => {
           type="email"
           id="email"
           name="email"
-          placeholder="Email"
           value={user.email}
           onChange={handleChange}
-          disabled={isLoading}
           required
+          placeholder="Enter your email"
+          autoComplete="email"
         />
 
         <label htmlFor="password">Password</label>
@@ -74,15 +74,19 @@ const UserRegistration: React.FC = () => {
           type="password"
           id="password"
           name="password"
-          placeholder="Password"
           value={user.password}
           onChange={handleChange}
-          disabled={isLoading}
           required
+          placeholder="Create a password"
+          autoComplete="new-password"
         />
 
-        <button type="submit" disabled={isLoading} className="submit-button">
-          {isLoading ? "Registering..." : "Register"}
+        <button type="submit" disabled={isLoading} className="register-button">
+          {isLoading ? (
+            <span>Creating Account...</span>
+          ) : (
+            <span>Create Account</span>
+          )}
         </button>
       </form>
     </div>

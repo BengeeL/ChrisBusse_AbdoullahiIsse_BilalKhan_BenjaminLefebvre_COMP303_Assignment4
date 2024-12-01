@@ -3,12 +3,12 @@ import UserRegistration from "../components/UserRegistration.tsx";
 import UserLogin from "../components/UserLogin.tsx";
 
 export default function Authentication() {
-  const [display, setDisplay] = useState("register");
+  const [display, setDisplay] = useState("login");
 
   return (
     <div className='auth-box'>
       {display === "register" ? (
-        <div>
+        <div className="auth-box">
           <UserRegistration />
           <a
             onClick={() => setDisplay("login")}
@@ -18,7 +18,7 @@ export default function Authentication() {
           </a>
         </div>
       ) : (
-        <div>
+        <div className="auth-box">
           <UserLogin />
           <a
             onClick={() => setDisplay("register")}

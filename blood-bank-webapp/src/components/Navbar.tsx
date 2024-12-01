@@ -23,12 +23,18 @@ const Navbar = () => {
 
   return (
     <nav className="navbar">
-      <div className="navbar-brand">Blood Bank System</div>
+      <Link to="/donor-dashboard" className="navbar-brand navbar-item">
+        🩸 Blood Bank
+      </Link>
       <div className="navbar-menu">
-        <Link to="/donor-dashboard" className="navbar-item">Dashboard</Link>
-        <Link to="/profile" className="navbar-item">Profile</Link>
+        <Link 
+          to="/donor-dashboard" 
+          className="navbar-item"
+        >
+          Dashboard
+        </Link>
         <div className="navbar-end">
-          <span className="navbar-item user-name">{user?.username}</span>
+          <span className="user-name">Welcome, {user?.username}</span>
           <button onClick={handleLogout} className="logout-button">
             Logout
           </button>

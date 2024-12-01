@@ -1,0 +1,156 @@
+/* Dashboard Layout */
+.dashboard-container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.dashboard {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  width: 100%;
+}
+
+/* Left Panel - Profile Section */
+.dashboard-left-panel {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  padding: 1.5rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.dashboard-profile {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Right Panel - Donation and History */
+.dashboard-right-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  width: 100%;
+}
+
+.dashboard-donation,
+.dashboard-history {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  padding: 1.5rem;
+  box-sizing: border-box;
+}
+
+/* Form Elements */
+.dashboard-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.dashboard-form > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.dashboard-form label {
+  color: #e0e0e0;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.dashboard-form input,
+.dashboard-form select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.dashboard-form input:focus,
+.dashboard-form select:focus {
+  outline: none;
+  border-color: #ff4b4b;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 0 2px rgba(255, 75, 75, 0.2);
+}
+
+.dashboard-form select option {
+  background: #1a1a1a;
+  color: #ffffff;
+}
+
+/* Section Headers */
+.section-header {
+  color: #ffffff;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid rgba(255, 75, 75, 0.3);
+}
+
+/* Buttons */
+.dashboard-button {
+  padding: 0.75rem 1.5rem;
+  border: 1px solid #ff4b4b;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #ff4b4b 0%, #ff6b6b 100%);
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 1rem;
+}
+
+.dashboard-button:hover {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ff4b4b 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 75, 75, 0.2);
+}
+
+.dashboard-button:disabled {
+  background: #4a4a4a;
+  border-color: #4a4a4a;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .dashboard {
+    grid-template-columns: 1fr;
+  }
+  
+  .dashboard-left-panel {
+    max-width: 100%;
+  }
+  
+  .dashboard-right-panel {
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: 1rem;
+  }
+}

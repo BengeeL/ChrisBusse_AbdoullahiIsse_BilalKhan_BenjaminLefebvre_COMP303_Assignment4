@@ -4,17 +4,17 @@ interface Donation {
     date: string;
     bloodGroup: string;
 }
+
 interface DonationHistoryProps {
-    donations: []
+    donations: Donation[]
 }
 
 const DonationHistory: React.FC<DonationHistoryProps> = ({donations}: DonationHistoryProps) => {
 
     return (
         <div>
-            <h2>Donation History</h2>
-            {donations.map((donation:Donation) => (
-                <p key={donation.id} className={"donation"}>
+            {donations.map((donation: Donation, index: number) => (
+                <p key={`${donation.id}-${index}`} className="donation">
                     Date: {donation.date},
                     Blood Group: {donation.bloodGroup},
                     Blood Bank: {donation.bloodBank}

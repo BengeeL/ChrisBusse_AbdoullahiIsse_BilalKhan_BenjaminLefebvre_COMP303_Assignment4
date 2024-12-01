@@ -52,7 +52,7 @@ public class DonorService {
                 .findDonorsByGender(genderType);
     }
 
-    public void saveDonor(final @Valid Donor Donor) {
+    public void saveDonor(final Donor Donor) {
         donorRepository
                 .save(Donor);
     }
@@ -70,6 +70,17 @@ public class DonorService {
         donorRepository
                 .save(DonorToUpdate);
         return true;
+    }
+
+    public Donor updateDonor(final @Valid Donor donor) throws EntityNotFoundException {
+        // Find the existing donor
+        var existingDonor = findDonorOrThrowException(donor.getId());
+        
+        // Update the donor's attributes
+        updateDonorAttributes(existingDonor, donor);
+        
+        // Save and return the updated donor
+        return donorRepository.save(existingDonor);
     }
 
     public Boolean deleteDonor(final Long id) throws EntityNotFoundException {
@@ -109,6 +120,7 @@ public class DonorService {
         target.setDateOfBirth(source.getDateOfBirth());
         target.setGender(source.getGender());
         target.setCity(source.getCity());
+        target.setBloodGroup(source.getBloodGroup());
         target.setPhoneNumber(source.getPhoneNumber());
         target.setModifiedAt(Instant.now());
     }

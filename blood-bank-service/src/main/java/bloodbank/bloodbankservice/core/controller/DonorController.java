@@ -81,17 +81,12 @@ public class DonorController {
     public ResponseEntity<APIResponse<List<Donor>>> findAllDonors() {
         var donorEntities = donorService.findAllDonors();
 
-        if (donorEntities.isEmpty()) {
-            return APIResponseHandler.collection(
-                    "No Donors found.",
-                    HttpStatus.NO_CONTENT,
-                    donorEntities);
-        } else {
-            return APIResponseHandler.collection(
-                    "Donors retrieved successfully.",
-                    HttpStatus.OK,
-                    donorEntities);
-        }
+        // Always return OK status with an empty list instead of NO_CONTENT
+        // This ensures the response format is consistent
+        return APIResponseHandler.collection(
+                donorEntities.isEmpty() ? "No Donors found." : "Donors retrieved successfully.",
+                HttpStatus.OK,
+                donorEntities);
     }
 
 
@@ -185,33 +180,28 @@ public class DonorController {
             @ApiResponse(responseCode = "400", description = "400 if the donor was not added successfully.")
     })
     @PostMapping(value = "/add")
-    public ResponseEntity<APIResponse<Donor>> addNewDonor(
-            @RequestParam String firstName,
-            @RequestParam String lastName,
-            @RequestParam Integer age,
-            @RequestParam Date dateOfBirth,
-            @RequestParam GenderType gender,
-            @RequestParam String city,
-            @RequestParam String phoneNumber
-    ) {
+    public ResponseEntity<APIResponse<Donor>> addNewDonor(@RequestBody Donor donor) {
         try {
-            var donor = Donor.builder()
-                    .firstName(firstName)
-                    .lastName(lastName)
-                    .dateOfBirth(dateOfBirth)
-                    .gender(gender)
-                    .city(city)
-                    .phoneNumber(phoneNumber)
-                    .CreatedAt(Instant.now())
-                    .ModifiedAt(Instant.now())
-                    .build();
+            // Set timestamps
+            donor.setCreatedAt(Instant.now());
+            donor.setModifiedAt(Instant.now());
+
+            // Only validate firstName as it's the only required field
+            if (donor.getFirstName() == null || donor.getFirstName().trim().isEmpty()) {
+                return APIResponseHandler.error(
+                        "Failed to add Donor. First name is required.",
+                        HttpStatus.BAD_REQUEST,
+                        "First name cannot be empty");
+            }
+
+            // Save donor with minimal information
             donorService.saveDonor(donor);
 
             return APIResponseHandler.payloadSuccess(
-                    "Donor with firstname: %s and lastname: %s has been added successfully.",
+                    "Donor with firstname: %s has been added successfully.",
                     HttpStatus.CREATED,
                     donor,
-                    donor.getFirstName(), donor.getLastName());
+                    donor.getFirstName());
 
         } catch (Exception e) {
             return APIResponseHandler.error(
@@ -272,7 +262,7 @@ public class DonorController {
             @RequestParam Long id,
             @RequestParam String firstName,
             @RequestParam String lastName,
-            @RequestParam Integer age,
+            @RequestParam String bloodGroup,
             @RequestParam Date dateOfBirth,
             @RequestParam GenderType gender,
             @RequestParam String city,
@@ -286,6 +276,7 @@ public class DonorController {
                 .gender(gender)
                 .city(city)
                 .phoneNumber(phoneNumber)
+                .bloodGroup(bloodGroup)
                 .build();
 
         donorService.updateDonor(donor, id);
@@ -297,6 +288,41 @@ public class DonorController {
                 id);
     }
 
+    @Operation(
+            summary = "Update a donor's information",
+            description = "Updates donor information based on the provided donor object"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Donor updated successfully"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "404", description = "Donor not found")
+    })
+    @PutMapping("/update")
+    public ResponseEntity<APIResponse<Donor>> updateDonor(@RequestBody Donor donor) {
+        try {
+            if (donor.getId() == null) {
+                return APIResponseHandler.error(
+                        "Donor ID is required for update",
+                        HttpStatus.BAD_REQUEST);
+            }
+
+            Donor updatedDonor = donorService.updateDonor(donor);
+            if (updatedDonor != null) {
+                return APIResponseHandler.payloadSuccess(
+                        "Donor updated successfully",
+                        HttpStatus.OK,
+                        updatedDonor);
+            } else {
+                return APIResponseHandler.error(
+                        "Donor not found with id: " + donor.getId(),
+                        HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            return APIResponseHandler.error(
+                    "Failed to update donor: " + e.getMessage(),
+                    HttpStatus.BAD_REQUEST);
+        }
+    }
 
     @Operation(
             summary = "Delete multiple donors from the database.",

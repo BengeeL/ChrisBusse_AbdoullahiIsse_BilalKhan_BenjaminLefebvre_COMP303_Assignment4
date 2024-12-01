@@ -13,13 +13,15 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.main-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 a {
   font-weight: 500;
-  color: #646cff;
   text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
 }
 
 h1 {
@@ -38,18 +40,14 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
 }
+
 button:hover {
-  border-color: #646cff;
+  border-color: #747bff;
 }
+
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
-}
-
-body {
-  margin: 0 auto;
-  min-width: 320px;
-  width: 80vw;
 }
 
 @media (prefers-color-scheme: light) {
@@ -69,103 +67,17 @@ form,
 .dashboard-history {
   padding: 20px;
   border-radius: 5px;
-  border: 3px solid gray;
   display: flex;
   flex-direction: column;
-}
-
-.auth-form {
-  width: 80vw;
 }
 
 label {
   font-weight: bold;
 }
 
-input,
-select {
-  padding: 10px;
-  margin-bottom: 15px;
-}
-
-.submit {
-  background-color: green;
-  color: white;
-  padding: 10px;
-  margin-top: 20px;
-  font-size: larger;
-  transition: background-color 0.5s, font-weight 0.1s;
-}
-
-.submit:hover {
-  background-color: darkgreen;
-  font-weight: bold;
-}
-
-.navbar {
-  list-style-type: none;
-  padding: 0;
-  display: flex;
-  background-color: #3c3c3c;
-}
-
-.navbar li {
-  margin: 0 15px;
-}
-
-.navbar li a {
-  color: white;
-  text-decoration: none;
-  padding: 14px 20px;
-  display: block;
-}
-
-.navbar li a:hover {
-  background-color: #71635d;
-}
-
 .active {
   background-color: #a39593;
   text-decoration: underline;
-}
-
-/* AUTHENTICATION */
-
-.auth-box {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-}
-
-.authentication-nav-link {
-  display: block;
-  width: 100%;
-  text-align: end;
-  margin: 10px 0;
-  cursor: pointer;
-  user-select: none;
-}
-
-/* DASHBOARD */
-.dashboard-container {
-  display: flex;
-  align-items: center;
-  justify-content: center; /* Center the dashboard */
-  height: 100%;
-  width: 100%;
-  margin: 0;
-  padding: 0;
-}
-
-.dashboard {
-  display: flex;
-  align-items: flex-start; /* Align items to the top */
-  justify-content: space-between;
-  width: 80%; /* Adjust width to fit within the container */
-  margin: 0;
-  padding: 0;
 }
 
 .dashboard-left-panel {
@@ -179,7 +91,6 @@ select {
 }
 
 .dashboard-history {
-  margin-top: 2vw;
   overflow: auto;
   max-height: 300px;
 }
@@ -188,7 +99,7 @@ select {
   list-style: none;
   margin: 0 0 12px;
   padding: 10px;
-  border: 3px solid gray;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   background-color: #3c3c3c;
   border-radius: 15px;
 }
