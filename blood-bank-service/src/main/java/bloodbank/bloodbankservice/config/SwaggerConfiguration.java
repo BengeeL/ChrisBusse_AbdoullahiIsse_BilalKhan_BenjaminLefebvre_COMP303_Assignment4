@@ -5,6 +5,8 @@ import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.servers.Server;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -14,7 +16,6 @@ import java.util.List;
 
 @Configuration
 public class SwaggerConfiguration {
-    //region Constant Fields
     private static final String API_VERSION = "1.0.0";
     private static final String API_TITLE = "Blood Bank API";
     private static final String API_LICENSE = "MIT";
@@ -25,9 +26,7 @@ public class SwaggerConfiguration {
 
     @Value("${blood-bank.prod.url}")
     private String prodUrl;
-    //endregion
 
-    // NOTE: Please add your contact information below (if you want to be included in the Swagger documentation).
     private List<Contact> contacts = List.of(
             createContact("Benjamin Lefebvre", "<github url>", "<email address>"),
             createContact("Chris Busse", "<github url>", "<email address>"),
@@ -55,12 +54,21 @@ public class SwaggerConfiguration {
                         .url("https://choosealicense.com/licenses/mit/"))
                 .contact(contact);
 
+        SecurityScheme securityScheme = new SecurityScheme()
+                .name("Authorization")
+                .type(SecurityScheme.Type.HTTP)
+                .scheme("bearer")
+                .bearerFormat("JWT");
 
+        SecurityRequirement securityRequirement = new SecurityRequirement().addList("Authorization");
 
-        return new OpenAPI().info(info).addServersItem(dev);
+        return new OpenAPI()
+                .info(info)
+                .addServersItem(dev)
+                .addSecurityItem(securityRequirement)
+                .components(new io.swagger.v3.oas.models.Components().addSecuritySchemes("Authorization", securityScheme));
     }
 
-    //region Private Methods
     @Deprecated
     private Info createInfo(String... args) {
         return new Info()
@@ -78,5 +86,4 @@ public class SwaggerConfiguration {
                 .url(url)
                 .email(email);
     }
-    //endregion
 }

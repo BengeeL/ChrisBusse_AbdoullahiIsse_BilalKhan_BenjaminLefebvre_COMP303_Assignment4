@@ -48,10 +48,10 @@ const DonorProfile: React.FC<DonorProfileProps> = ({ onBloodGroupChange }) => {
         setIsLoading(true);
         setError(null);
 
-        const response = await api.get("/api/v1/donor/find/all");
-        const existingDonor = response.data.payload?.find(
-          (d: Donor) => d.userName === user.username
+        const response = await api.get(
+          "/api/v1/donor/find/username/" + user.username
         );
+        const existingDonor = response.data.payload;
 
         if (existingDonor) {
           if (isMounted) {

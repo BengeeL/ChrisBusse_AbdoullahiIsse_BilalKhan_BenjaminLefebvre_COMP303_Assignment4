@@ -106,18 +106,10 @@ public class BloodBankController {
     public ResponseEntity<APIResponse<List<BloodBank>>> findAllBloodBanks() {
         var bloodBankEntities = bloodBankService.findAllBloodBanks();
 
-        if (bloodBankEntities.isEmpty()) {
-            return APIResponseHandler.collection(
-                    "No Blood Banks were found.",
-                    HttpStatus.OK,
-                    Collections.emptyList());
-
-        } else {
-            return APIResponseHandler.collection(
-                    "All Blood Banks were successfully retrieved.",
-                    HttpStatus.OK,
-                    bloodBankEntities);
-        }
+        return APIResponseHandler.collection(
+                bloodBankEntities.isEmpty() ? "No Blood Banks found." : "Blood Banks retrieved successfully.",
+                HttpStatus.OK,
+                bloodBankEntities);
     }
 
     // ***********************************************
