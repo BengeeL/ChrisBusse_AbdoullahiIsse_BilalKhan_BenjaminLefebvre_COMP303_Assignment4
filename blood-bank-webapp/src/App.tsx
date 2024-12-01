@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Authentication from "./pages/authentication";
+import Authentication from "./pages/Authentication";
 import DonorDashboard from "./pages/DonorDashboard";
 
 const App: React.FC = () => {

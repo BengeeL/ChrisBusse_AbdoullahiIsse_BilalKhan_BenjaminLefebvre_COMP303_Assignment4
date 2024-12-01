@@ -1,22 +1,26 @@
 import DonorProfile from "../components/DonorProfile";
 import ScheduleDonation from "../components/ScheduleDonation";
 import DonationHistory from "../components/DonationHistory";
+import {useState} from "react";
+//
+// interface Donation {
+//   id: number;
+//   bloodBank: string;
+//   date: string;
+//   bloodGroup: string;
+// }
 
 export default function DonorDashboard() {
+
+  const [storedDonations, SetDonations] = useState<[]>(JSON.parse(localStorage.getItem('donations') as string) || [])
+
+  const storeDonations = (newDonation:string) => {
+    localStorage.setItem('donations', newDonation)
+    SetDonations(JSON.parse(localStorage.getItem('donations') as string) || [])
+  }
+
   return (
     <div className='dashboard-container'>
-      {/* <h1>Blood Donation Site</h1>
-      <nav>
-        <ul className={"navbar"}>
-
-          <li>
-            <Link to='/profile'>Profile</Link>
-          </li> */}
-      {/*<li><Link to="/schedule">Schedule Donation</Link></li>*/}
-      {/*<li><Link to="/history">Donation History</Link></li>*/}
-      {/* </ul>
-      </nav> */}
-
       <div className='dashboard'>
         <div className='dashboard-left-panel'>
           <div className='dashboard-profile'>
@@ -26,10 +30,10 @@ export default function DonorDashboard() {
 
         <div className='dashboard-right-panel'>
           <div className='dashboard-donation'>
-            <ScheduleDonation />
+            <ScheduleDonation  addDonation={storeDonations}/>
           </div>
           <div className='dashboard-history'>
-            <DonationHistory />
+            <DonationHistory donations={storedDonations} />
           </div>
         </div>
       </div>
