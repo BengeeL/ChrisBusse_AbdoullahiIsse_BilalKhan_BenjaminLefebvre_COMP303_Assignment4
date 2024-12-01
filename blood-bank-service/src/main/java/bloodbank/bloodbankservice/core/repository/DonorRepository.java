@@ -11,4 +11,5 @@ import java.util.List;
 public interface DonorRepository extends JpaRepository<Donor, Long> {
     List<Donor> findDonorsByCity(final String city);
     List<Donor> findDonorsByGender(final GenderType gender);
+    Donor findDonorByUserName(final String userName);
 }

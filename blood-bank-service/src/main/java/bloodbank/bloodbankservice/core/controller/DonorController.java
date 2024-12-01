@@ -44,7 +44,6 @@ public class DonorController {
     // ********************* GET *********************
     // ***********************************************
 
-    // @note: This is what it should be
     @Operation(
             summary = "Find a donor by its given id.",
             description = "Returns an APIResponse with the donor if found by its id.")
@@ -58,7 +57,6 @@ public class DonorController {
     }
 
 
-    // @note: This could be changed later on (or as an option if you want to use RequestParam).
     @Operation(
             summary = "Find a donor by its given id (using RequestParam).",
             description = "Returns an APIResponse with the donor if found by its id.")
@@ -84,8 +82,6 @@ public class DonorController {
     public ResponseEntity<APIResponse<List<Donor>>> findAllDonors() {
         var donorEntities = donorService.findAllDonors();
 
-        // Always return OK status with an empty list instead of NO_CONTENT
-        // This ensures the response format is consistent
         return APIResponseHandler.collection(
                 donorEntities.isEmpty() ? "No Donors found." : "Donors retrieved successfully.",
                 HttpStatus.OK,

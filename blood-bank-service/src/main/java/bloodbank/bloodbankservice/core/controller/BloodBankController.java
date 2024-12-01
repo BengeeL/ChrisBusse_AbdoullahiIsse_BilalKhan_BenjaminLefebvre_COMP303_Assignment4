@@ -42,7 +42,6 @@ public class BloodBankController {
     // ********************* GET *********************
     // ***********************************************
 
-    // @note: This is what it should be.
     @Operation(
             summary = "Find a blood bank by its given id.",
             description = "Returns an APIResponse with the blood bank if found by its id.")
@@ -55,7 +54,6 @@ public class BloodBankController {
         return wrappedBloodBankResponse(id);
     }
 
-    // @note: This could be changed later on (or as an option if you want use RequestParam).
     @Operation(
             summary = "Find a blood bank by its given id (using RequestParam).",
             description = "Returns an APIResponse with the blood bank if found by its id."
@@ -102,8 +100,7 @@ public class BloodBankController {
             description = "Returns an APIResponse with all the blood bank entities within the database."
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "200 if the blood banks were found successfully."),
-            @ApiResponse(responseCode = "204", description = "204 if the blood banks were not found.")
+            @ApiResponse(responseCode = "200", description = "200 if the blood banks were found successfully (empty list otherwise)."),
     })
     @GetMapping("/find/all")
     public ResponseEntity<APIResponse<List<BloodBank>>> findAllBloodBanks() {
@@ -112,7 +109,7 @@ public class BloodBankController {
         if (bloodBankEntities.isEmpty()) {
             return APIResponseHandler.collection(
                     "No Blood Banks were found.",
-                    HttpStatus.NO_CONTENT,
+                    HttpStatus.OK,
                     Collections.emptyList());
 
         } else {
