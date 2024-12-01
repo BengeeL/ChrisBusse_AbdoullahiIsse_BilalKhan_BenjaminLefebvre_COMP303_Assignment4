@@ -53,6 +53,7 @@ public class BloodBankService {
         return findBloodBankOrThrowException(id);
     }
 
+    // @note: This method is not used yet.
     public BloodBank getBloodBankByName(final String name) {
         return bloodBankRepository
                 .findBloodBankByBloodBankName(name);
@@ -63,6 +64,7 @@ public class BloodBankService {
         return true;
     }
 
+    // @note: This method is not used yet.
     public Boolean saveBloodBanks(final List<@Valid BloodBank> bloodBanks) {
         bloodBankRepository
                 .saveAll(bloodBanks);
@@ -86,6 +88,7 @@ public class BloodBankService {
         return true;
     }
 
+    // @note: This method is not used yet.
     public Boolean deleteBloodBanks(final List<Long> ids) throws EntityNotFoundException {
         for (var id: ids) {
             if (!bloodBankRepository.existsById(id)) {

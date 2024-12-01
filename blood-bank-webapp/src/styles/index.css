@@ -105,13 +105,9 @@ label {
 }
 
 @media (max-width: 1024px) {
-  /* .dashboard-container {
-    margin: 2vw;
-  } */
-
   .dashboard {
     flex-direction: column;
-    width: 96vw; /* Adjust width for smaller screens */
+    width: 96vw; 
   }
 
   .dashboard-left-panel {

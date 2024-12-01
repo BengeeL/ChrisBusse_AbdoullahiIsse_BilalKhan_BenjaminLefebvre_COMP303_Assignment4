@@ -40,7 +40,7 @@ public class AuthController {
             String jwtToken = jwtService.generateToken(user);
             
             logger.info("Login successful for user: {}", user.getUsername());
-            return ResponseEntity.ok(new AuthenticationResponse(jwtToken));
+            return ResponseEntity.status(200).body(new AuthenticationResponse(jwtToken));
         } catch (Exception e) {
             logger.error("Login error", e);
             return ResponseEntity.status(401).body(new AuthenticationResponse(null));
@@ -51,7 +51,7 @@ public class AuthController {
     public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
         try {
             authService.register(request);
-            return ResponseEntity.ok().body("Registration successful");
+            return ResponseEntity.status(200).body("Registration successful");
         } catch (Exception e) {
             logger.error("Registration error", e);
             return ResponseEntity.badRequest().body(e.getMessage());

@@ -41,6 +41,7 @@ public class BloodStockService {
         return findBloodStockOrThrowException(id);
     }
 
+    // @note: This method is not used yet.
     public BloodStock findBloodStockByBloodGroup(final String bloodGroup) {
         return bloodStockRepository
                 .findBloodStockByBloodGroup(bloodGroup);
@@ -56,6 +57,7 @@ public class BloodStockService {
                 .save(bloodStock);
     }
 
+    // @note: This method is not used yet.
     public void saveBloodStocks(final List<@Valid BloodStock> bloodStocks) {
         bloodStockRepository
                 .saveAll(bloodStocks);
@@ -79,6 +81,7 @@ public class BloodStockService {
         return true;
     }
 
+    // @note: This method is not used yet.
     public Boolean deleteBloodStocks(final List<Long> ids) throws EntityNotFoundException {
         for (var id: ids){
             if (!bloodStockRepository.existsById(id)) {

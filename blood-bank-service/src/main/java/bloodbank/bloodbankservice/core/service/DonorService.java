@@ -57,6 +57,7 @@ public class DonorService {
                 .save(Donor);
     }
 
+    // @note: This method is not used yet.
     public void saveDonors(final List<@Valid Donor> Donors) {
         donorRepository
                 .saveAll(Donors);
@@ -92,6 +93,7 @@ public class DonorService {
         return true;
     }
 
+    // @note: This method is not used yet.
     public Boolean deleteDonors(final List<Long> ids) throws EntityNotFoundException {
         for (var id : ids) {
             if (!donorRepository.existsById(id)) {

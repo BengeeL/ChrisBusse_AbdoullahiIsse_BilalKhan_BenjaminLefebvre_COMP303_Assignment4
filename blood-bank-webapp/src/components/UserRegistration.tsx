@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../utils/api";
-import '../styles/auth.css';
-import {useAuth} from "../context/AuthContext.tsx";
+import "../styles/auth.css";
+import { useAuth } from "../context/AuthContext.tsx";
 
 interface userRegisterRequest {
   username: string;
@@ -10,7 +10,7 @@ interface userRegisterRequest {
   password: string;
 }
 
-interface loginRequest{
+interface loginRequest {
   username: string;
   password: string;
 }
@@ -25,8 +25,8 @@ interface donorRegisterRequest {
   bloodGroup: string;
   city: string;
   phoneNumber: string;
-  createdAt?: string | '';
-  modifiedAt?: string | '';
+  createdAt?: string | "";
+  modifiedAt?: string | "";
 }
 
 interface CombinedRegisterRequest {
@@ -41,11 +41,9 @@ interface CombinedRegisterRequest {
   bloodGroup: string;
   city: string;
   phoneNumber: string;
-  createdAt?: string | '';
-  modifiedAt?: string | '';
+  createdAt?: string | "";
+  modifiedAt?: string | "";
 }
-
-
 
 const UserRegistration: React.FC = () => {
   const navigate = useNavigate();
@@ -58,7 +56,7 @@ const UserRegistration: React.FC = () => {
     firstName: "",
     lastName: "",
     age: 0,
-    dateOfBirth: new Date().toISOString().split('T')[0],
+    dateOfBirth: new Date().toISOString().split("T")[0],
     gender: "PREFER_NOT_TO_SAY",
     bloodGroup: "A+",
     city: "",
@@ -74,32 +72,31 @@ const UserRegistration: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const response = await api.post('/api/auth/login', request);
+      const response = await api.post("/api/auth/login", request);
       const { token } = response.data;
       login(token);
-      // navigate('/donor-dashboard');
     } catch (error: any) {
-      console.error('Login error:', error);
-      alert(error)
-      setError(error.response?.data?.message || 'Failed to login. Please try again.');
+      setError(error.response?.data || "Failed to login. Please try again.");
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     setUser({ ...user, [e.target.name]: e.target.value });
   };
 
   const formatDateForInput = (dateString: string) => {
-    if (!dateString) return '';
+    if (!dateString) return "";
     // Handle ISO date string format
-    if (dateString.includes('T')) {
-      return dateString.split('T')[0];
+    if (dateString.includes("T")) {
+      return dateString.split("T")[0];
     }
     // Handle other date formats
     const date = new Date(dateString);
-    return date.toISOString().split('T')[0];
+    return date.toISOString().split("T")[0];
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -110,197 +107,183 @@ const UserRegistration: React.FC = () => {
     try {
       const loginInfo: loginRequest = {
         username: user.username,
-        password: user.password
-      }
+        password: user.password,
+      };
       const registerInfo: userRegisterRequest = {
         username: user.username,
-        email:user.email,
-        password: user.password
-      }
+        email: user.email,
+        password: user.password,
+      };
       const donorInfo: donorRegisterRequest = {
         userName: user.username,
         firstName: user.firstName,
-        lastName:user.lastName,
-        dateOfBirth:user.dateOfBirth,
-        age:user.age,
-        city:user.city,
-        bloodGroup:user.bloodGroup,
-        gender:user.gender,
-        phoneNumber:user.phoneNumber,
-        createdAt:user.createdAt,
-        modifiedAt:user.modifiedAt
-      }
+        lastName: user.lastName,
+        dateOfBirth: user.dateOfBirth,
+        age: user.age,
+        city: user.city,
+        bloodGroup: user.bloodGroup,
+        gender: user.gender,
+        phoneNumber: user.phoneNumber,
+        createdAt: user.createdAt,
+        modifiedAt: user.modifiedAt,
+      };
 
-
-      alert(registerInfo.toString())
-      alert(donorInfo.toString())
-      console.log(registerInfo)
-      console.log(donorInfo)
       const userResponse = await api.post("/api/auth/register", registerInfo);
-      console.log(userResponse)
-      const loginResponse = await handleLogin(loginInfo)
-      console.log(loginResponse)
-      console.log(donorInfo)
-      console.log("username: ", donorInfo.userName)
-      const donorResponse = await api.post("api/v1/donor/add", donorInfo)
-      console.log(donorResponse)
-      navigate('/donor-dashboard');
+      console.log(userResponse);
+      if (userResponse.status !== 200) {
+        setError("Failed to register user: " + userResponse.data.message);
+        throw new Error("Failed to register user");
+      }
+      await handleLogin(loginInfo);
+      await api.post("api/v1/donor/add", donorInfo);
+
+      navigate("/donor-dashboard");
     } catch (error: any) {
-      alert(error)
-      setError(error.response?.data?.message || "Error during registration");
-      console.error("Error registering:", error);
+      setError(error.response?.data || "Error during registration");
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-      <div className="auth-container">
-        <form onSubmit={handleSubmit} className="auth-form">
+    <div className='auth-container'>
+      <form onSubmit={handleSubmit} className='auth-form'>
+        <h2>Create Account</h2>
+        {error && <div className='error-message'>{error}</div>}
 
-          <h2>Create Account</h2>
-          {error && <div className="error-message">{error}</div>}
+        <label htmlFor='username'>Username</label>
+        <input
+          type='text'
+          id='username'
+          name='username'
+          value={user.username}
+          onChange={handleChange}
+          required
+          minLength={3}
+          maxLength={50}
+          placeholder='Choose a username'
+          autoComplete='username'
+        />
 
-          <label htmlFor="username">Username</label>
-          <input
-              type="text"
-              id="username"
-              name="username"
-              value={user.username}
-              onChange={handleChange}
-              required
-              minLength={3}
-              maxLength={50}
-              placeholder="Choose a username"
-              autoComplete="username"
-          />
+        <label htmlFor='email'>Email</label>
+        <input
+          type='email'
+          id='email'
+          name='email'
+          value={user.email}
+          onChange={handleChange}
+          required
+          maxLength={50}
+          placeholder='Enter your email'
+          autoComplete='email'
+        />
 
-          <label htmlFor="email">Email</label>
-          <input
-              type="email"
-              id="email"
-              name="email"
-              value={user.email}
-              onChange={handleChange}
-              required
-              maxLength={50}
-              placeholder="Enter your email"
-              autoComplete="email"
-          />
+        <label htmlFor='password'>Password</label>
+        <input
+          type='password'
+          id='password'
+          name='password'
+          value={user.password}
+          onChange={handleChange}
+          required
+          maxLength={120}
+          placeholder='Create a password'
+          autoComplete='new-password'
+        />
 
-          <label htmlFor="password">Password</label>
-          <input
-              type="password"
-              id="password"
-              name="password"
-              value={user.password}
-              onChange={handleChange}
-              required
-              maxLength={120}
-              placeholder="Create a password"
-              autoComplete="new-password"
-          />
+        <label htmlFor='firstName'>First Name</label>
+        <input
+          type='text'
+          name='firstName'
+          placeholder={"First Name"}
+          value={user.firstName}
+          onChange={handleChange}
+          minLength={2}
+          maxLength={50}
+          required
+        />
 
-            <label htmlFor='firstName'>First Name</label>
-            <input
-                type='text'
-                name='firstName'
-                placeholder={"First Name"}
-                value={user.firstName}
-                onChange={handleChange}
-                minLength={2}
-                maxLength={50}
-                required
-            />
+        <label htmlFor='lastName'>Last Name</label>
+        <input
+          type='text'
+          name='lastName'
+          value={user.lastName}
+          onChange={handleChange}
+          placeholder={"Last Name"}
+          minLength={2}
+          maxLength={50}
+          required
+        />
 
-            <label htmlFor='lastName'>Last Name</label>
-            <input
-                type='text'
-                name='lastName'
-                value={user.lastName}
-                onChange={handleChange}
-                placeholder={"Last Name"}
-                minLength={2}
-                maxLength={50}
-                required
-            />
+        <label htmlFor='dob'>Date Of Birth</label>
+        <input
+          type='date'
+          name='dateOfBirth'
+          placeholder='DOB'
+          value={formatDateForInput(user.dateOfBirth)}
+          onChange={handleChange}
+          required
+        />
 
+        <label htmlFor='gender'>Gender</label>
+        <select
+          name='gender'
+          onChange={handleChange}
+          value={user.gender}
+          required
+        >
+          <option value='PREFER_NOT_TO_SAY'>I prefer not to say.</option>
+          <option value='MALE'>Male</option>
+          <option value='FEMALE'>Female</option>
+          <option value='OTHER'>Other</option>
+        </select>
 
-            <label htmlFor='dob'>Date Of Birth</label>
-            <input
-                type='date'
-                name='dateOfBirth'
-                placeholder='DOB'
-                value={formatDateForInput(user.dateOfBirth)}
-                onChange={handleChange}
-                required
-            />
+        <label htmlFor='bloodGroup'>Blood Group</label>
+        <select
+          name='bloodGroup'
+          onChange={handleChange}
+          value={user.bloodGroup}
+          required
+        >
+          <option value='A+'>A+</option>
+          <option value='A-'>A-</option>
+          <option value='B+'>B+</option>
+          <option value='B-'>B-</option>
+          <option value='AB+'>AB+</option>
+          <option value='AB-'>AB-</option>
+          <option value='O+'>O+</option>
+          <option value='O-'>O-</option>
+        </select>
 
+        <label htmlFor='city'>City</label>
+        <input
+          type='text'
+          name='city'
+          placeholder={"City of Origin"}
+          value={user.city}
+          onChange={handleChange}
+          required
+        />
 
-            <label htmlFor='gender'>Gender</label>
-            <select
-                name='gender'
-                onChange={handleChange}
-                value={user.gender}
-                required
-            >
-              <option value='PREFER_NOT_TO_SAY'>I prefer not to say.</option>
-              <option value='MALE'>Male</option>
-              <option value='FEMALE'>Female</option>
-              <option value='OTHER'>Other</option>
-            </select>
+        <label htmlFor='phoneNumber'>Phone Number</label>
+        <input
+          type='tel'
+          name='phoneNumber'
+          placeholder={"Phone Number"}
+          value={user.phoneNumber}
+          onChange={handleChange}
+          required
+        />
 
-
-            <label htmlFor='bloodGroup'>Blood Group</label>
-            <select
-                name='bloodGroup'
-                onChange={handleChange}
-                value={user.bloodGroup}
-                required
-            >
-              <option value='A+'>A+</option>
-              <option value='A-'>A-</option>
-              <option value='B+'>B+</option>
-              <option value='B-'>B-</option>
-              <option value='AB+'>AB+</option>
-              <option value='AB-'>AB-</option>
-              <option value='O+'>O+</option>
-              <option value='O-'>O-</option>
-            </select>
-
-
-            <label htmlFor='city'>City</label>
-            <input
-                type='text'
-                name='city'
-                placeholder={"City of Origin"}
-                value={user.city}
-                onChange={handleChange}
-                required
-            />
-
-
-            <label htmlFor='phoneNumber'>Phone Number</label>
-            <input
-                type='tel'
-                name='phoneNumber'
-                placeholder={"Phone Number"}
-                value={user.phoneNumber}
-                onChange={handleChange}
-                required
-            />
-
-
-          <button type="submit" disabled={isLoading} className="register-button">
-            {isLoading ? (
-                <span>Creating Account...</span>
-            ) : (
-                <span>Create Account</span>
-            )}
-          </button>
-
-        </form>
-      </div>
+        <button type='submit' disabled={isLoading} className='register-button'>
+          {isLoading ? (
+            <span>Creating Account...</span>
+          ) : (
+            <span>Create Account</span>
+          )}
+        </button>
+      </form>
+    </div>
   );
 };
 
