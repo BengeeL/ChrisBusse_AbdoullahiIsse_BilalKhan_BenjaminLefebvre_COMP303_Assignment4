@@ -192,8 +192,7 @@ public class DonorController {
             @RequestParam Date dateOfBirth,
             @RequestParam GenderType gender,
             @RequestParam String city,
-            @RequestParam String phoneNumber,
-            @RequestParam String password
+            @RequestParam String phoneNumber
     ) {
         try {
             var donor = Donor.builder()
@@ -205,7 +204,6 @@ public class DonorController {
                     .phoneNumber(phoneNumber)
                     .CreatedAt(Instant.now())
                     .ModifiedAt(Instant.now())
-                    .password(password)
                     .build();
             donorService.saveDonor(donor);
 

@@ -64,10 +64,6 @@ public class Donor implements Serializable {
     @NotBlank(message = "Provided phone number is a required field and should not be blank.")
     private @NotNull String phoneNumber;
 
-    @Column(name = "password", nullable = false)
-    @NotBlank(message = "Password is a required field and should not be blank.")
-    private @NotNull String password;
-
     //region Timestamps
     @Column(name="created_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     @CreatedDate

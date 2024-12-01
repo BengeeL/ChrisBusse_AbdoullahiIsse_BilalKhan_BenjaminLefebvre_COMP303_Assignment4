@@ -1,6 +1,6 @@
 import { useState } from "react";
-import DonorRegistration from "../components/DonorRegistration";
-import DonorLogin from "../components/DonorLogin";
+import UserRegistration from "../components/UserRegistration.tsx";
+import UserLogin from "../components/UserLogin.tsx";
 
 export default function Authentication() {
   const [display, setDisplay] = useState("register");
@@ -9,7 +9,7 @@ export default function Authentication() {
     <div className='auth-box'>
       {display === "register" ? (
         <div>
-          <DonorRegistration />
+          <UserRegistration />
           <a
             onClick={() => setDisplay("login")}
             className='authentication-nav-link'
@@ -19,7 +19,7 @@ export default function Authentication() {
         </div>
       ) : (
         <div>
-          <DonorLogin />
+          <UserLogin />
           <a
             onClick={() => setDisplay("register")}
             className='authentication-nav-link'
