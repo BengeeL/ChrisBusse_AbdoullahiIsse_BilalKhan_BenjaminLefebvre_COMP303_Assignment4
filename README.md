@@ -5,10 +5,10 @@
 **Due Date**: Week 13
 
 ## Tech Stack 
-**Frontend**: React, Typescript, HTML, CSS
-**Backend**: Spring Boot, Java
-**Database**: MySQL
-**APIs**: RESTful APIs for seamless communication between frontend and backend
+- **Frontend**: React, Typescript, HTML, CSS
+- **Backend**: Spring Boot, Java
+- **Database**: MySQL
+- **APIs**: RESTful APIs for seamless communication between frontend and backend
 
 ## Purpose
 
