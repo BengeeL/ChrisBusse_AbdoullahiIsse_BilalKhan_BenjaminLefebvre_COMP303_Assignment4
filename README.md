@@ -4,6 +4,12 @@
 **Assignment**: Microservices Development  
 **Due Date**: Week 13
 
+## Tech Stack 
+**Frontend**: React, Typescript, HTML, CSS
+**Backend**: Spring Boot, Java
+**Database**: MySQL
+**APIs**: RESTful APIs for seamless communication between frontend and backend
+
 ## Purpose
 
 This assignment will help you practice the following:
